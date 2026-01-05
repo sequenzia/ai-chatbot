@@ -1,0 +1,29 @@
+import { convertToModelMessages, streamText, type UIMessage, gateway } from 'ai';
+import { config } from '@/config';
+
+export const maxDuration = 30;
+
+export async function POST(req: Request) {
+  try {
+    const { messages, model }: { messages: UIMessage[]; model?: string } = await req.json();
+
+    const selectedModel = model || config.ai.defaultModel;
+
+    const result = streamText({
+      model: gateway(selectedModel),
+      system: 'You are a helpful assistant.',
+      messages: await convertToModelMessages(messages),
+    });
+
+    return result.toUIMessageStreamResponse();
+  } catch (error) {
+    console.error('Chat API error:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to process chat request' }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  }
+}
