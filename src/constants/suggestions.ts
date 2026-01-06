@@ -9,9 +9,9 @@ export interface Suggestion {
 
 export const SUGGESTIONS: Suggestion[] = [
   {
-    title: "Analyze Data",
-    description: "Help analyze datasets for trends",
-    prompt: "Can you help me analyze this dataset for trends?",
+    title: "Create a Chart",
+    description: "Show me a bar chart example with sample data for monthly sales.",
+    prompt: "Show me a bar chart example with sample data for monthly sales.",
     icon: Zap,
   },
   {

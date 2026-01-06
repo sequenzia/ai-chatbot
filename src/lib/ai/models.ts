@@ -3,6 +3,7 @@
  * Format: provider/model-name
  */
 export const MODELS = [
+  { id: 'openai/gpt-oss-120b', name: 'GPT-OSS 120B', provider: 'baseten' },
   { id: 'anthropic/claude-sonnet-4', name: 'Claude Sonnet 4', provider: 'anthropic' },
   { id: 'anthropic/claude-haiku', name: 'Claude Haiku', provider: 'anthropic' },
   { id: 'openai/gpt-4o', name: 'GPT-4o', provider: 'openai' },
