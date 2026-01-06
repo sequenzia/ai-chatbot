@@ -93,8 +93,8 @@ function ChatPage() {
       />
 
       <main className="flex-1 flex flex-col relative overflow-hidden">
-        {/* Decorative gradients */}
-        <div className="absolute inset-0 pointer-events-none">
+        {/* Decorative gradients - hidden in dark mode for solid background */}
+        <div className="absolute inset-0 pointer-events-none dark:hidden">
           <div className="absolute -top-[500px] -right-[500px] w-[1000px] h-[1000px] rounded-full bg-primary/5 blur-3xl" />
           <div className="absolute -bottom-[500px] -left-[500px] w-[1000px] h-[1000px] rounded-full bg-primary/5 blur-3xl" />
         </div>
