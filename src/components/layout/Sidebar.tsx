@@ -44,7 +44,7 @@ export function Sidebar({
   const { theme, toggleTheme } = useTheme();
 
   // Get real conversations from database
-  const { conversations, deleteConversation } = useConversations();
+  const { conversations, deleteConversation, clearAllConversations } = useConversations();
   const { conversationId, switchConversation, startNewConversation } = useChat2();
 
   // Calculate sidebar width based on device type
@@ -78,6 +78,12 @@ export function Sidebar({
     }
 
     await deleteConversation(id);
+  };
+
+  const handleClearAllHistory = async () => {
+    await clearAllConversations();
+    await startNewConversation();
+    setShowUserMenu(false);
   };
 
   return (
@@ -301,6 +307,15 @@ export function Sidebar({
                       </button>
                       <div className="border-t border-border" />
                       <button
+                        onClick={handleClearAllHistory}
+                        role="menuitem"
+                        className="flex items-center gap-3 w-full p-3 min-h-[44px] hover:bg-destructive/10 transition-colors text-sm text-muted-foreground hover:text-destructive"
+                      >
+                        <Trash2 className="size-4" />
+                        <span>Delete All History</span>
+                      </button>
+                      <div className="border-t border-border" />
+                      <button
                         role="menuitem"
                         className="flex items-center gap-3 w-full p-3 min-h-[44px] hover:bg-sidebar-accent transition-colors text-sm text-muted-foreground hover:text-sidebar-foreground"
                       >
@@ -382,6 +397,15 @@ export function Sidebar({
                       >
                         <HelpCircle className="size-4" />
                         <span>Get Help</span>
+                      </button>
+                      <div className="border-t border-border" />
+                      <button
+                        onClick={handleClearAllHistory}
+                        role="menuitem"
+                        className="flex items-center gap-3 w-full p-3 min-h-[44px] hover:bg-destructive/10 transition-colors text-sm text-muted-foreground hover:text-destructive"
+                      >
+                        <Trash2 className="size-4" />
+                        <span>Delete All History</span>
                       </button>
                       <div className="border-t border-border" />
                       <button
