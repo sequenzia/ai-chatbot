@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { ChevronDown, Lightbulb, Paperclip, Send } from 'lucide-react';
+import { Check, ChevronDown, Lightbulb, Paperclip, Send } from 'lucide-react';
 import {
   PromptInput,
   PromptInputTextarea,
@@ -11,6 +11,18 @@ import {
   PromptInputTools,
   PromptInputButton,
 } from '@/components/ai-elements/prompt-input';
+import {
+  ModelSelector,
+  ModelSelectorTrigger,
+  ModelSelectorContent,
+  ModelSelectorInput,
+  ModelSelectorList,
+  ModelSelectorEmpty,
+  ModelSelectorGroup,
+  ModelSelectorItem,
+  ModelSelectorLogo,
+  ModelSelectorName,
+} from '@/components/ai-elements/model-selector';
 import { useChat2 } from './ChatProvider';
 import { MODELS } from '@/lib/ai/models';
 import { SUGGESTIONS } from '@/constants/suggestions';
@@ -29,10 +41,17 @@ export function ChatInput({
 }: ChatInputProps) {
   const { sendMessage, isLoading, selectedModel, setSelectedModel, messages, status } = useChat2();
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [showModelSelector, setShowModelSelector] = useState(false);
+  const [modelSelectorOpen, setModelSelectorOpen] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
   const selectedModelData = MODELS.find((m) => m.id === selectedModel) || MODELS[0];
+
+  // Group models by provider
+  const providers = [...new Set(MODELS.map((m) => m.provider))];
+  const modelsByProvider = providers.map((provider) => ({
+    provider,
+    models: MODELS.filter((m) => m.provider === provider),
+  }));
 
   const handleSubmit = useCallback(
     (message: { text: string }) => {
@@ -138,52 +157,56 @@ export function ChatInput({
 
             {/* Right Actions - Model Selector + Submit */}
             <div className="flex items-center gap-2">
-              {/* Custom Model Selector (preserved for AI Gateway) */}
-              <div className="relative">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowModelSelector(!showModelSelector)}
-                  className="h-9 gap-1 rounded-full px-3"
-                >
-                  <span className="text-xs truncate max-w-[100px]">
-                    {selectedModelData.name}
-                  </span>
-                  <ChevronDown className="size-3" />
-                </Button>
-
-                <AnimatePresence>
-                  {showModelSelector && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 5, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 5, scale: 0.95 }}
-                      className="absolute bottom-full right-0 mb-2 w-48 rounded-xl border border-border bg-popover shadow-lg overflow-hidden"
-                    >
-                      {MODELS.map((model) => (
-                        <button
-                          key={model.id}
-                          type="button"
-                          onClick={() => {
-                            setSelectedModel(model.id);
-                            setShowModelSelector(false);
-                          }}
-                          className={cn(
-                            'w-full px-3 py-2 text-left text-sm hover:bg-muted/50 transition-colors',
-                            model.id === selectedModel && 'bg-muted'
-                          )}
-                        >
-                          <div className="font-medium">{model.name}</div>
-                          <div className="text-xs text-muted-foreground capitalize">
-                            {model.provider}
-                          </div>
-                        </button>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+              {/* AI Elements Model Selector */}
+              <ModelSelector open={modelSelectorOpen} onOpenChange={setModelSelectorOpen}>
+                <ModelSelectorTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-9 gap-1.5 rounded-full px-3"
+                  >
+                    <ModelSelectorLogo
+                      provider={selectedModelData.provider}
+                      className="size-4"
+                    />
+                    <span className="text-xs truncate max-w-[100px]">
+                      {selectedModelData.name}
+                    </span>
+                    <ChevronDown className="size-3" />
+                  </Button>
+                </ModelSelectorTrigger>
+                <ModelSelectorContent title="Select Model">
+                  <ModelSelectorInput placeholder="Search models..." />
+                  <ModelSelectorList>
+                    <ModelSelectorEmpty>No models found.</ModelSelectorEmpty>
+                    {modelsByProvider.map(({ provider, models }) => (
+                      <ModelSelectorGroup
+                        key={provider}
+                        heading={provider.charAt(0).toUpperCase() + provider.slice(1)}
+                      >
+                        {models.map((model) => (
+                          <ModelSelectorItem
+                            key={model.id}
+                            value={model.id}
+                            onSelect={() => {
+                              setSelectedModel(model.id);
+                              setModelSelectorOpen(false);
+                            }}
+                            className="flex items-center gap-2"
+                          >
+                            <ModelSelectorLogo provider={model.provider} />
+                            <ModelSelectorName>{model.name}</ModelSelectorName>
+                            {model.id === selectedModel && (
+                              <Check className="size-4 text-primary" />
+                            )}
+                          </ModelSelectorItem>
+                        ))}
+                      </ModelSelectorGroup>
+                    ))}
+                  </ModelSelectorList>
+                </ModelSelectorContent>
+              </ModelSelector>
 
               <PromptInputSubmit
                 status={status}
