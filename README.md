@@ -4,11 +4,12 @@ A modern AI chatbot template built with Next.js 15, Vercel AI SDK, and Tailwind 
 
 ## Features
 
-- **Multi-Provider Support** - Switch between AI providers (Anthropic, OpenAI, Google) via AI Gateway
+- **Multi-Provider Support** - Switch between AI providers (OpenAI, Anthropic, Google, DeepSeek) via AI Gateway
 - **Streaming Responses** - Real-time streaming chat with the AI SDK
 - **Dark/Light Mode** - System-aware theme with manual toggle
 - **Responsive Design** - Mobile-first design with collapsible sidebar
 - **Accessibility** - Reduced motion support, proper ARIA labels
+- **Interactive Content Blocks** - Forms, charts, code blocks, and cards via AI tools
 
 ## Tech Stack
 
@@ -73,6 +74,11 @@ src/
 │   │   ├── ChatContainer.tsx   # Message list with auto-scroll
 │   │   ├── ChatMessage.tsx     # Message rendering
 │   │   └── InputComposer.tsx   # Input + model selector
+│   ├── blocks/                 # Interactive content blocks
+│   │   ├── FormContent.tsx     # Dynamic form rendering
+│   │   ├── ChartContent.tsx    # Data visualization
+│   │   ├── CodeContent.tsx     # Syntax-highlighted code
+│   │   └── CardContent.tsx     # Rich content cards
 │   ├── layout/
 │   │   └── Sidebar.tsx         # Navigation sidebar
 │   ├── providers/
@@ -81,7 +87,9 @@ src/
 ├── config.ts                   # Environment configuration
 ├── hooks/                      # Custom React hooks
 ├── lib/
-│   ├── ai/models.ts           # AI model definitions
+│   ├── ai/
+│   │   ├── models.ts          # AI model definitions
+│   │   └── tools.ts           # AI tool definitions
 │   ├── motion/variants.ts     # Animation variants
 │   └── utils.ts               # Utility functions
 ├── styles/
@@ -97,12 +105,14 @@ The chatbot supports multiple AI providers through AI Gateway:
 
 | Model | Provider |
 |-------|----------|
-| Claude Sonnet 4 | Anthropic |
-| Claude Haiku | Anthropic |
+| GPT-OSS 120B | Baseten |
+| GPT-5 Nano | OpenAI |
+| GPT-5 Mini | OpenAI |
 | GPT-4o | OpenAI |
 | GPT-4o Mini | OpenAI |
-| Gemini 1.5 Pro | Google |
-| Gemini 1.5 Flash | Google |
+| Claude Haiku 4.5 | Anthropic |
+| Gemini 2.5 Flash Lite | Google |
+| DeepSeek V3.2 | DeepSeek |
 
 ## Customization
 

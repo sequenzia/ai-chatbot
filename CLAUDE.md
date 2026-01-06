@@ -27,10 +27,11 @@ This is a Next.js 15 + Vercel AI SDK v6 + Tailwind CSS v4 AI chatbot application
 ### Key Directories
 - `src/app/` - Next.js App Router pages and API routes
 - `src/components/chat/` - Chat components (ChatProvider, ChatContainer, ChatMessage, InputComposer)
+- `src/components/blocks/` - Interactive content blocks (forms, charts, code, cards)
 - `src/components/layout/` - Layout components (Sidebar)
 - `src/components/providers/` - React context providers (ThemeProvider)
 - `src/components/ui/` - shadcn/ui component library
-- `src/lib/ai/` - AI model definitions
+- `src/lib/ai/` - AI model and tool definitions
 - `src/lib/motion/` - Animation variants
 - `src/hooks/` - Custom React hooks
 - `src/styles/` - CSS files (tailwind.css, theme.css)
@@ -38,7 +39,7 @@ This is a Next.js 15 + Vercel AI SDK v6 + Tailwind CSS v4 AI chatbot application
 
 ### AI SDK Integration
 - **AI SDK v6** with `useChat` hook from `@ai-sdk/react`
-- **AI Gateway** for multi-provider support (Anthropic, OpenAI, Google)
+- **AI Gateway** for multi-provider support (OpenAI, Anthropic, Google, DeepSeek, Baseten)
 - **Chat class** with `DefaultChatTransport` for API communication
 - **UIMessage** type for message handling with parts-based content
 - **Streaming** via `streamText` and `toUIMessageStreamResponse`
@@ -77,6 +78,7 @@ AI_GATEWAY_API_KEY=your_api_key_here
 |------|---------|
 | `src/config.ts` | Centralized environment configuration |
 | `src/lib/ai/models.ts` | AI model definitions for model selector |
+| `src/lib/ai/tools.ts` | AI tool definitions (generateForm, generateChart, etc.) |
 | `src/components/chat/ChatProvider.tsx` | Chat state management with AI SDK |
 | `src/app/api/chat/route.ts` | Streaming chat API endpoint |
 
