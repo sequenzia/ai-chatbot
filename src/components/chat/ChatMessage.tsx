@@ -81,7 +81,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
                     toolPart.output
                   ) {
                     return (
-                      <div key={key} className="w-[min(100%,600px)]">
+                      <div key={key} className="w-full">
                         <ContentBlock
                           content={toolPart.output as ContentBlockType}
                           messageId={message.id}

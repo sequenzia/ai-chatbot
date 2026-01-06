@@ -113,39 +113,14 @@ export function InputComposer({
         <form onSubmit={handleSubmit} className="relative">
           <div
             className={cn(
-              'flex items-end gap-2 rounded-2xl border transition-shadow',
+              'flex flex-col rounded-2xl border transition-shadow',
               'bg-card/70 dark:bg-card/40 backdrop-blur-xl',
               'border-border/20 dark:border-border/40',
               'shadow-lg dark:shadow-2xl',
               'focus-within:shadow-xl dark:focus-within:shadow-3xl'
             )}
           >
-            {/* Left Actions */}
-            <div className="flex items-center gap-1 p-2">
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="size-9 rounded-lg"
-                aria-label="Attach file"
-              >
-                <Paperclip className="size-5" />
-              </Button>
-              {isFixed && messages.length > 0 && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="size-9 rounded-lg"
-                  onClick={() => setShowSuggestions(!showSuggestions)}
-                  aria-label="Show suggestions"
-                >
-                  <Lightbulb className="size-5" />
-                </Button>
-              )}
-            </div>
-
-            {/* Textarea */}
+            {/* Textarea - Full Width */}
             <textarea
               ref={textareaRef}
               value={input}
@@ -155,72 +130,101 @@ export function InputComposer({
               rows={1}
               disabled={isLoading}
               className={cn(
-                'flex-1 resize-none bg-transparent py-3 pr-2',
-                'focus:outline-none placeholder:text-muted-foreground',
-                'min-h-[56px] max-h-[200px]',
+                'no-focus-ring w-full resize-none bg-transparent py-5 px-5',
+                'border-transparent outline-none shadow-none',
+                'placeholder:text-muted-foreground',
+                'min-h-[120px] max-h-[200px]',
                 'disabled:opacity-50'
               )}
             />
 
-            {/* Right Actions */}
-            <div className="flex items-center gap-2 p-2">
-              {/* Model Selector */}
-              <div className="relative">
+            {/* Footer Actions */}
+            <div className="flex items-center justify-between px-3 pb-3">
+              {/* Left Actions */}
+              <div className="flex items-center gap-1">
                 <Button
                   type="button"
                   variant="ghost"
-                  size="sm"
-                  onClick={() => setShowModelSelector(!showModelSelector)}
-                  className="h-9 gap-1 rounded-full px-3"
+                  size="icon"
+                  className="size-9 rounded-lg"
+                  aria-label="Attach file"
                 >
-                  <span className="text-xs truncate max-w-[100px]">
-                    {selectedModelData.name}
-                  </span>
-                  <ChevronDown className="size-3" />
+                  <Paperclip className="size-5" />
                 </Button>
-
-                <AnimatePresence>
-                  {showModelSelector && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 5, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 5, scale: 0.95 }}
-                      className="absolute bottom-full right-0 mb-2 w-48 rounded-xl border border-border bg-popover shadow-lg overflow-hidden"
-                    >
-                      {MODELS.map((model) => (
-                        <button
-                          key={model.id}
-                          type="button"
-                          onClick={() => {
-                            setSelectedModel(model.id);
-                            setShowModelSelector(false);
-                          }}
-                          className={cn(
-                            'w-full px-3 py-2 text-left text-sm hover:bg-muted/50 transition-colors',
-                            model.id === selectedModel && 'bg-muted'
-                          )}
-                        >
-                          <div className="font-medium">{model.name}</div>
-                          <div className="text-xs text-muted-foreground capitalize">
-                            {model.provider}
-                          </div>
-                        </button>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {isFixed && messages.length > 0 && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="size-9 rounded-lg"
+                    onClick={() => setShowSuggestions(!showSuggestions)}
+                    aria-label="Show suggestions"
+                  >
+                    <Lightbulb className="size-5" />
+                  </Button>
+                )}
               </div>
 
-              {/* Send Button */}
-              <Button
-                type="submit"
-                size="icon"
-                disabled={!input.trim() || isLoading}
-                className="size-9 rounded-lg"
-              >
-                <Send className="size-4" />
-                <span className="sr-only">Send message</span>
-              </Button>
+              {/* Right Actions */}
+              <div className="flex items-center gap-2">
+                {/* Model Selector */}
+                <div className="relative">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowModelSelector(!showModelSelector)}
+                    className="h-9 gap-1 rounded-full px-3"
+                  >
+                    <span className="text-xs truncate max-w-[100px]">
+                      {selectedModelData.name}
+                    </span>
+                    <ChevronDown className="size-3" />
+                  </Button>
+
+                  <AnimatePresence>
+                    {showModelSelector && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 5, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 5, scale: 0.95 }}
+                        className="absolute bottom-full right-0 mb-2 w-48 rounded-xl border border-border bg-popover shadow-lg overflow-hidden"
+                      >
+                        {MODELS.map((model) => (
+                          <button
+                            key={model.id}
+                            type="button"
+                            onClick={() => {
+                              setSelectedModel(model.id);
+                              setShowModelSelector(false);
+                            }}
+                            className={cn(
+                              'w-full px-3 py-2 text-left text-sm hover:bg-muted/50 transition-colors',
+                              model.id === selectedModel && 'bg-muted'
+                            )}
+                          >
+                            <div className="font-medium">{model.name}</div>
+                            <div className="text-xs text-muted-foreground capitalize">
+                              {model.provider}
+                            </div>
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Send Button */}
+                <Button
+                  type="submit"
+                  size="icon"
+                  disabled={!input.trim() || isLoading}
+                  className="size-9 rounded-lg"
+                >
+                  <Send className="size-4" />
+                  <span className="sr-only">Send message</span>
+                </Button>
+              </div>
             </div>
           </div>
         </form>
