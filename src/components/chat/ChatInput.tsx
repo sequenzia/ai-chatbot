@@ -128,9 +128,9 @@ export function ChatInput({
           className={cn(
             'rounded-2xl border transition-shadow',
             'bg-card/70 dark:bg-card/40 backdrop-blur-xl',
-            'border-border/20 dark:border-border/40',
-            'shadow-lg dark:shadow-2xl',
-            'focus-within:shadow-xl dark:focus-within:shadow-3xl'
+            'border-border/20 dark:border-transparent',
+            'shadow-lg dark:shadow-none',
+            'focus-within:shadow-xl dark:focus-within:shadow-none'
           )}
         >
           <PromptInputTextarea
