@@ -6,6 +6,7 @@ A modern AI chatbot template built with Next.js 15, Vercel AI SDK, and Tailwind 
 
 - **Multi-Provider Support** - Switch between AI providers (OpenAI, Anthropic, Google, DeepSeek) via AI Gateway
 - **Streaming Responses** - Real-time streaming chat with the AI SDK
+- **AI Elements UI** - Pre-built components from Vercel AI SDK (conversation, message, prompt-input, model-selector)
 - **Dark/Light Mode** - System-aware theme with manual toggle
 - **Responsive Design** - Mobile-first design with collapsible sidebar
 - **Accessibility** - Reduced motion support, proper ARIA labels
@@ -14,7 +15,7 @@ A modern AI chatbot template built with Next.js 15, Vercel AI SDK, and Tailwind 
 ## Tech Stack
 
 - **Framework**: Next.js 15 (App Router, Turbopack)
-- **AI**: Vercel AI SDK v6 with AI Gateway
+- **AI**: Vercel AI SDK v6 with AI Gateway and AI Elements
 - **Styling**: Tailwind CSS v4
 - **Animation**: Framer Motion
 - **UI Components**: shadcn/ui
@@ -64,16 +65,23 @@ npm start
 ```
 src/
 ├── app/
-│   ├── api/chat/route.ts    # AI streaming endpoint
-│   ├── globals.css          # Global styles
-│   ├── layout.tsx           # Root layout
-│   └── page.tsx             # Main chat page
+│   ├── api/chat/route.ts       # AI streaming endpoint
+│   ├── globals.css             # Global styles
+│   ├── layout.tsx              # Root layout
+│   └── page.tsx                # Main chat page
 ├── components/
+│   ├── ai-elements/            # AI SDK UI components
+│   │   ├── conversation.tsx    # Conversation wrapper
+│   │   ├── message.tsx         # Message components
+│   │   ├── prompt-input.tsx    # Input textarea
+│   │   ├── model-selector.tsx  # Model picker dialog
+│   │   ├── suggestion.tsx      # Suggestion buttons
+│   │   └── loader.tsx          # Loading indicators
 │   ├── chat/
 │   │   ├── ChatProvider.tsx    # useChat wrapper + model state
-│   │   ├── ChatContainer.tsx   # Message list with auto-scroll
-│   │   ├── ChatMessage.tsx     # Message rendering
-│   │   └── InputComposer.tsx   # Input + model selector
+│   │   ├── ChatConversation.tsx # Message list with auto-scroll
+│   │   ├── ChatMessageItem.tsx  # Individual message rendering
+│   │   └── ChatInput.tsx        # Input + model selector
 │   ├── blocks/                 # Interactive content blocks
 │   │   ├── FormContent.tsx     # Dynamic form rendering
 │   │   ├── ChartContent.tsx    # Data visualization

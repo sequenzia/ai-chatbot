@@ -26,7 +26,8 @@ This is a Next.js 15 + Vercel AI SDK v6 + Tailwind CSS v4 AI chatbot application
 
 ### Key Directories
 - `src/app/` - Next.js App Router pages and API routes
-- `src/components/chat/` - Chat components (ChatProvider, ChatContainer, ChatMessage, InputComposer)
+- `src/components/chat/` - Chat components (ChatProvider, ChatConversation, ChatMessageItem, ChatInput)
+- `src/components/ai-elements/` - AI SDK UI components (prompt-input, model-selector, conversation, message, suggestion, loader)
 - `src/components/blocks/` - Interactive content blocks (forms, charts, code, cards)
 - `src/components/layout/` - Layout components (Sidebar)
 - `src/components/providers/` - React context providers (ThemeProvider)
@@ -40,15 +41,22 @@ This is a Next.js 15 + Vercel AI SDK v6 + Tailwind CSS v4 AI chatbot application
 ### AI SDK Integration
 - **AI SDK v6** with `useChat` hook from `@ai-sdk/react`
 - **AI Gateway** for multi-provider support (OpenAI, Anthropic, Google, DeepSeek, Baseten)
+- **AI Elements** UI components from `@ai-sdk/react` (conversation, message, prompt-input, model-selector)
 - **Chat class** with `DefaultChatTransport` for API communication
 - **UIMessage** type for message handling with parts-based content
 - **Streaming** via `streamText` and `toUIMessageStreamResponse`
+- **StreamDown** for streaming markdown rendering in assistant messages
 
 ### Chat State Management
 - `ChatProvider` wraps the app with chat context
 - Uses AI SDK's `Chat` class with `DefaultChatTransport`
 - Model selection persisted in component state
 - `useChat2()` hook exposes: messages, sendMessage, status, selectedModel, clearMessages, stop
+
+### Chat Components
+- `ChatConversation` - Message list with auto-scroll using AI Elements Conversation
+- `ChatMessageItem` - Message rendering with AI Elements Message components
+- `ChatInput` - Input textarea with model selector using AI Elements PromptInput and ModelSelector
 
 ### Styling System
 - **Tailwind CSS v4** via `@tailwindcss/postcss` plugin
@@ -80,6 +88,9 @@ AI_GATEWAY_API_KEY=your_api_key_here
 | `src/lib/ai/models.ts` | AI model definitions for model selector |
 | `src/lib/ai/tools.ts` | AI tool definitions (generateForm, generateChart, etc.) |
 | `src/components/chat/ChatProvider.tsx` | Chat state management with AI SDK |
+| `src/components/chat/ChatConversation.tsx` | Message list with auto-scroll |
+| `src/components/chat/ChatMessageItem.tsx` | Individual message rendering |
+| `src/components/chat/ChatInput.tsx` | Input composer with model selector |
 | `src/app/api/chat/route.ts` | Streaming chat API endpoint |
 
 ## Adding New Models
