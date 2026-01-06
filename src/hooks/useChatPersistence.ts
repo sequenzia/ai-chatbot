@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { nanoid } from 'nanoid';
 import type { UIMessage } from '@ai-sdk/react';
@@ -16,7 +16,8 @@ export function useChatPersistence(options: UseChatPersistenceOptions = {}) {
   const [currentConversationId, setCurrentConversationId] = useState<string>(
     () => initialConversationId || nanoid()
   );
-  const isInitializedRef = useRef(false);
+  // Track whether conversation exists in IndexedDB
+  const isPersistedRef = useRef(false);
 
   // Load messages for current conversation
   const storedMessages = useLiveQuery(
@@ -40,12 +41,30 @@ export function useChatPersistence(options: UseChatPersistenceOptions = {}) {
     []
   );
 
-  // Save a single message
+  // Save a single message (creates conversation if needed)
   const saveMessage = useCallback(
-    async (message: UIMessage) => {
+    async (message: UIMessage, fallbackTitle?: string) => {
       try {
         // Use a transaction to atomically check and insert
         await db.transaction('rw', db.messages, db.conversations, async () => {
+          // Ensure conversation exists before saving message
+          if (!isPersistedRef.current) {
+            const existingConv = await db.conversations.get(
+              currentConversationId
+            );
+            if (!existingConv) {
+              const now = new Date();
+              await db.conversations.put({
+                id: currentConversationId,
+                title: fallbackTitle || 'New Chat',
+                createdAt: now,
+                updatedAt: now,
+                userId,
+              });
+            }
+            isPersistedRef.current = true;
+          }
+
           // Check if message already exists to prevent duplicates
           const existing = await db.messages
             .where('conversationId')
@@ -102,25 +121,14 @@ export function useChatPersistence(options: UseChatPersistenceOptions = {}) {
     [currentConversationId]
   );
 
-  // Create new conversation
-  const createConversation = useCallback(
-    async (title?: string) => {
-      const id = nanoid();
-      const now = new Date();
-
-      await db.conversations.add({
-        id,
-        title: title || 'New Chat',
-        createdAt: now,
-        updatedAt: now,
-        userId,
-      });
-
-      setCurrentConversationId(id);
-      return id;
-    },
-    [userId]
-  );
+  // Create new conversation (deferred - only sets state, DB write happens on first message)
+  const createConversation = useCallback(async () => {
+    const id = nanoid();
+    // Don't create in DB yet - will be created on first message save
+    isPersistedRef.current = false;
+    setCurrentConversationId(id);
+    return id;
+  }, []);
 
   // Clear current conversation messages
   const clearConversation = useCallback(async () => {
@@ -140,46 +148,20 @@ export function useChatPersistence(options: UseChatPersistenceOptions = {}) {
     [currentConversationId]
   );
 
-  // Switch to a different conversation
+  // Switch to a different conversation (existing conversations are already persisted)
   const switchConversation = useCallback((id: string) => {
+    isPersistedRef.current = true;
     setCurrentConversationId(id);
   }, []);
 
-  // Initialize conversation on mount
-  useEffect(() => {
-    if (isInitializedRef.current) return;
-
-    const initConversation = async () => {
-      try {
-        const existing = await db.conversations.get(currentConversationId);
-        if (!existing) {
-          const now = new Date();
-          // Use put instead of add to handle race conditions
-          await db.conversations.put({
-            id: currentConversationId,
-            title: 'New Chat',
-            createdAt: now,
-            updatedAt: now,
-            userId,
-          });
-        }
-        isInitializedRef.current = true;
-      } catch (error) {
-        // Ignore constraint errors - conversation already exists
-        if (error instanceof Error && error.name === 'ConstraintError') {
-          isInitializedRef.current = true;
-          return;
-        }
-        throw error;
-      }
-    };
-    initConversation();
-  }, [currentConversationId, userId]);
+  // NOTE: Conversation is NOT created on mount anymore.
+  // It will be created on first message save via saveMessage().
 
   return {
     conversationId: currentConversationId,
     storedMessages: storedMessages ? convertToUIMessages(storedMessages) : [],
     isLoading: storedMessages === undefined,
+    isPersisted: isPersistedRef.current,
     saveMessage,
     updateMessage,
     createConversation,

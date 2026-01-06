@@ -13,6 +13,9 @@ import { useChat, type UIMessage, Chat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { MODELS, DEFAULT_MODEL, type ModelId } from '@/lib/ai/models';
 import { useChatPersistence } from '@/hooks/useChatPersistence';
+import { useTitleGeneration } from '@/hooks/useTitleGeneration';
+import { useConversations } from '@/hooks/useConversations';
+import { getTextFromMessage } from '@/lib/utils/message';
 
 interface ChatContextType {
   messages: UIMessage[];
@@ -36,6 +39,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [selectedModel, setSelectedModel] = useState<ModelId>(DEFAULT_MODEL.id);
   const previousMessagesRef = useRef<UIMessage[]>([]);
   const hasLoadedRef = useRef(false);
+  const titleGeneratedRef = useRef<Set<string>>(new Set());
 
   // Persistence hook
   const {
@@ -48,6 +52,20 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     clearConversation,
     switchConversation: switchConversationDb,
   } = useChatPersistence();
+
+  // Conversations hook for updating titles
+  const { updateTitle } = useConversations();
+
+  // Title generation hook
+  const { generateTitle, generateFallbackTitle } = useTitleGeneration({
+    onTitleGenerated: (convId, title) => {
+      updateTitle(convId, title);
+      titleGeneratedRef.current.add(convId);
+    },
+    onError: (error) => {
+      console.error('Title generation error:', error);
+    },
+  });
 
   // Create transport with model in body
   const chat = useMemo(() => {
@@ -90,9 +108,15 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       const prevIds = new Set(previousMessagesRef.current.map((m) => m.id));
       const newMessages = messages.filter((m) => !prevIds.has(m.id));
 
-      // Save each new message
+      // Get first user message for fallback title
+      const firstUserMessage = messages.find((m) => m.role === 'user');
+      const fallbackTitle = firstUserMessage
+        ? generateFallbackTitle(getTextFromMessage(firstUserMessage))
+        : 'New Chat';
+
+      // Save each new message (with fallback title for first save)
       for (const message of newMessages) {
-        await saveMessage(message);
+        await saveMessage(message, fallbackTitle);
       }
 
       // Update existing messages that may have changed (e.g., streaming content finalized)
@@ -103,12 +127,35 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       }
 
       previousMessagesRef.current = messages;
+
+      // Trigger title generation after first complete exchange
+      const hasUserMessage = messages.some((m) => m.role === 'user');
+      const hasAssistantMessage = messages.some((m) => m.role === 'assistant');
+
+      if (
+        hasUserMessage &&
+        hasAssistantMessage &&
+        !titleGeneratedRef.current.has(conversationId)
+      ) {
+        const userMsg = messages.find((m) => m.role === 'user');
+        if (userMsg) {
+          generateTitle(conversationId, getTextFromMessage(userMsg));
+        }
+      }
     };
 
     if (messages.length > 0) {
       saveNewMessages();
     }
-  }, [messages, status, saveMessage, updateMessage]);
+  }, [
+    messages,
+    status,
+    saveMessage,
+    updateMessage,
+    conversationId,
+    generateTitle,
+    generateFallbackTitle,
+  ]);
 
   const sendMessage = useCallback(
     (text: string) => {
@@ -137,6 +184,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       setMessages([]);
       previousMessagesRef.current = [];
       hasLoadedRef.current = false;
+      // Existing conversations already have titles, don't regenerate
+      titleGeneratedRef.current.add(id);
       switchConversationDb(id);
     },
     [setMessages, switchConversationDb]
