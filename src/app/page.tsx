@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Sparkles } from 'lucide-react';
 import { ChatProvider, useChat2 } from '@/components/chat/ChatProvider';
-import { ChatContainer } from '@/components/chat/ChatContainer';
-import { InputComposer } from '@/components/chat/InputComposer';
+import { ChatConversation } from '@/components/chat/ChatConversation';
+import { ChatInput } from '@/components/chat/ChatInput';
 import { Sidebar } from '@/components/layout/Sidebar';
+import { Suggestions, Suggestion } from '@/components/ai-elements/suggestion';
 import { SUGGESTIONS } from '@/constants/suggestions';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
@@ -35,26 +36,30 @@ function WelcomeScreen() {
 
       {/* Input */}
       <div className="w-full max-w-2xl mb-8">
-        <InputComposer isFixed={false} placeholder="How can I help you today?" />
+        <ChatInput isFixed={false} placeholder="How can I help you today?" />
       </div>
 
-      {/* Suggestions */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 w-full max-w-2xl">
+      {/* Suggestions - Using AI Elements */}
+      <Suggestions className="w-full max-w-2xl grid grid-cols-2 md:grid-cols-4 gap-3">
         {SUGGESTIONS.map((suggestion, index) => (
-          <motion.button
+          <motion.div
             key={suggestion.title}
             initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            onClick={() => sendMessage(suggestion.prompt)}
-            disabled={isLoading}
-            className="flex items-center gap-2 p-3 min-h-[44px] bg-card border border-border rounded-xl text-left hover:border-border/60 hover:shadow-sm transition-all disabled:opacity-50"
           >
-            <suggestion.icon className="size-4 text-muted-foreground shrink-0" />
-            <span className="text-sm font-medium truncate">{suggestion.title}</span>
-          </motion.button>
+            <Suggestion
+              suggestion={suggestion.prompt}
+              onClick={() => sendMessage(suggestion.prompt)}
+              disabled={isLoading}
+              className="flex items-center gap-2 p-3 min-h-[44px] w-full justify-start rounded-xl"
+            >
+              <suggestion.icon className="size-4 text-muted-foreground shrink-0" />
+              <span className="text-sm font-medium truncate">{suggestion.title}</span>
+            </Suggestion>
+          </motion.div>
         ))}
-      </div>
+      </Suggestions>
     </motion.div>
   );
 }
@@ -98,8 +103,8 @@ function ChatPage() {
           <WelcomeScreen />
         ) : (
           <>
-            <ChatContainer />
-            <InputComposer isFixed={true} />
+            <ChatConversation />
+            <ChatInput isFixed={true} />
           </>
         )}
       </main>
