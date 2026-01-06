@@ -77,7 +77,7 @@ export function ChatInput({
       <div
         className={cn(
           'pointer-events-auto mx-auto',
-          isFixed && 'max-w-[1024px] px-4 pb-8 md:pb-10 pt-10',
+          isFixed && 'max-w-[calc(100%-2rem)] sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-5xl px-4 pb-8 md:pb-10 pt-10',
           isFixed && 'bg-gradient-to-t from-background via-background/80 to-transparent'
         )}
       >
