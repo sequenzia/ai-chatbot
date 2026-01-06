@@ -1,4 +1,10 @@
-import { Zap, Code, Sparkles, MessageSquare, type LucideIcon } from "lucide-react";
+import {
+  Code,
+  Sparkles,
+  ChartNoAxesColumnIncreasing,
+  Mail,
+  type LucideIcon,
+} from "lucide-react";
 
 export interface Suggestion {
   title: string;
@@ -9,27 +15,28 @@ export interface Suggestion {
 
 export const SUGGESTIONS: Suggestion[] = [
   {
-    title: "Create a Chart",
-    description: "Show me a bar chart example with sample data for monthly sales.",
-    prompt: "Show me a bar chart example with sample data for monthly sales.",
-    icon: Zap,
+    title: "Create a chart",
+    description: "Create a bar chart with sample data",
+    prompt: "Show me a bar chart example with sample data for monthly sales",
+    icon: ChartNoAxesColumnIncreasing
   },
   {
-    title: "Write Code",
+    title: "Write code",
     description: "Create responsive React components",
-    prompt: "Create a responsive React component using Tailwind CSS.",
+    prompt: "Create a responsive React component using Tailwind CSS",
     icon: Code,
+  },
+  {
+    title: "Create a form",
+    description: "Create a feedback form",
+    prompt:
+      "Create a feedback form for my website with fields for name, email, rating, and comments",
+    icon: Mail,
   },
   {
     title: "Brainstorm",
     description: "Generate creative ideas",
-    prompt: "Give me 5 creative ideas for a new mobile app.",
+    prompt: "Give me 5 creative ideas for a new mobile app",
     icon: Sparkles,
-  },
-  {
-    title: "Summarize",
-    description: "Summarize complex documents",
-    prompt: "Summarize the key takeaways from a complex technical paper.",
-    icon: MessageSquare,
   },
 ];
