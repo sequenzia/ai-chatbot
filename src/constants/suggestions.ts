@@ -23,7 +23,7 @@ export const SUGGESTIONS: Suggestion[] = [
   {
     title: "Brainstorm",
     description: "Generate creative ideas",
-    prompt: "Give me 5 creative ideas for a low-fidelity wireframe.",
+    prompt: "Give me 5 creative ideas for a new mobile app.",
     icon: Sparkles,
   },
   {
