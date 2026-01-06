@@ -14,11 +14,15 @@ import {
   BookOpen,
   HelpCircle,
   Menu,
+  Trash2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { formatDistanceToNow } from "date-fns";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useConversations } from "@/hooks/useConversations";
+import { useChat2 } from "@/components/chat/ChatProvider";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -39,6 +43,10 @@ export function Sidebar({
   const [showUserMenu, setShowUserMenu] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
+  // Get real conversations from database
+  const { conversations, deleteConversation } = useConversations();
+  const { conversationId, switchConversation, startNewConversation } = useChat2();
+
   // Calculate sidebar width based on device type
   const getSidebarWidth = () => {
     if (!isOpen) return isMobile ? 0 : 72;
@@ -54,15 +62,23 @@ export function Sidebar({
     }
   }, [isOpen, showUserMenu]);
 
-  const history = [
-    {
-      id: 1,
-      title: "Quantum Computing Basics",
-      date: "2h ago",
-    },
-    { id: 2, title: "React Performance Tips", date: "5h ago" },
-    { id: 3, title: "Recipe for Sourdough", date: "Yesterday" },
-  ];
+  const handleConversationClick = (id: string) => {
+    switchConversation(id);
+    if (isMobile) {
+      onToggle(); // Close sidebar on mobile after selecting
+    }
+  };
+
+  const handleDeleteConversation = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation(); // Prevent triggering the conversation click
+
+    // If deleting the current conversation, start a new one first
+    if (id === conversationId) {
+      await startNewConversation();
+    }
+
+    await deleteConversation(id);
+  };
 
   return (
     <>
@@ -179,20 +195,47 @@ export function Sidebar({
                 <span>Recent History</span>
               </div>
               <nav className="space-y-1" aria-label="Chat history">
-                {history.map((chat) => (
-                  <button
-                    key={chat.id}
-                    aria-label={`Open chat: ${chat.title}`}
-                    className="w-full flex flex-col items-start gap-1 p-3 min-h-[44px] rounded-lg hover:bg-sidebar-accent transition-colors group text-left"
-                  >
-                    <span className="text-sm text-sidebar-foreground/70 truncate w-full group-hover:text-sidebar-foreground">
-                      {chat.title}
-                    </span>
-                    <span className="text-[10px] text-muted-foreground">
-                      {chat.date}
-                    </span>
-                  </button>
-                ))}
+                {conversations.length === 0 ? (
+                  <div className="text-sm text-muted-foreground px-3 py-2">
+                    No conversations yet
+                  </div>
+                ) : (
+                  conversations.map((chat) => (
+                    <div
+                      key={chat.id}
+                      className={`w-full flex items-center gap-1 rounded-lg transition-colors group ${
+                        chat.id === conversationId
+                          ? 'bg-sidebar-accent'
+                          : 'hover:bg-sidebar-accent'
+                      }`}
+                    >
+                      <button
+                        onClick={() => handleConversationClick(chat.id)}
+                        aria-label={`Open chat: ${chat.title}`}
+                        aria-current={chat.id === conversationId ? 'page' : undefined}
+                        className="flex-1 flex flex-col items-start gap-1 p-3 min-h-[44px] text-left"
+                      >
+                        <span className={`text-sm truncate w-full ${
+                          chat.id === conversationId
+                            ? 'text-sidebar-foreground'
+                            : 'text-sidebar-foreground/70 group-hover:text-sidebar-foreground'
+                        }`}>
+                          {chat.title}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground">
+                          {formatDistanceToNow(new Date(chat.updatedAt), { addSuffix: true })}
+                        </span>
+                      </button>
+                      <button
+                        onClick={(e) => handleDeleteConversation(e, chat.id)}
+                        aria-label={`Delete chat: ${chat.title}`}
+                        className="p-2 mr-1 rounded-md opacity-0 group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive transition-all"
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
+                    </div>
+                  ))
+                )}
               </nav>
             </div>
           )}

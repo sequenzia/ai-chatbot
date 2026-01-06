@@ -1,9 +1,18 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useRef,
+} from 'react';
 import { useChat, type UIMessage, Chat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { MODELS, DEFAULT_MODEL, type ModelId } from '@/lib/ai/models';
+import { useChatPersistence } from '@/hooks/useChatPersistence';
 
 interface ChatContextType {
   messages: UIMessage[];
@@ -14,12 +23,31 @@ interface ChatContextType {
   setSelectedModel: (model: ModelId) => void;
   clearMessages: () => void;
   stop: () => void;
+  // Persistence-related
+  conversationId: string;
+  switchConversation: (id: string) => void;
+  startNewConversation: () => Promise<string>;
+  isDbLoading: boolean;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [selectedModel, setSelectedModel] = useState<ModelId>(DEFAULT_MODEL.id);
+  const previousMessagesRef = useRef<UIMessage[]>([]);
+  const hasLoadedRef = useRef(false);
+
+  // Persistence hook
+  const {
+    conversationId,
+    storedMessages,
+    isLoading: isDbLoading,
+    saveMessage,
+    updateMessage,
+    createConversation,
+    clearConversation,
+    switchConversation: switchConversationDb,
+  } = useChatPersistence();
 
   // Create transport with model in body
   const chat = useMemo(() => {
@@ -39,6 +67,49 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     stop,
   } = useChat({ chat });
 
+  // Load stored messages when conversation changes or on initial load
+  useEffect(() => {
+    if (!isDbLoading && !hasLoadedRef.current) {
+      // Mark as loaded immediately to prevent race conditions
+      hasLoadedRef.current = true;
+
+      if (storedMessages.length > 0) {
+        setMessages(storedMessages);
+        previousMessagesRef.current = storedMessages;
+      }
+    }
+  }, [isDbLoading, storedMessages, setMessages]);
+
+  // Save new messages when they are added (after streaming completes)
+  useEffect(() => {
+    const saveNewMessages = async () => {
+      // Only save when status is ready (not during streaming)
+      if (status !== 'ready') return;
+
+      // Check if we have new messages compared to what was previously tracked
+      const prevIds = new Set(previousMessagesRef.current.map((m) => m.id));
+      const newMessages = messages.filter((m) => !prevIds.has(m.id));
+
+      // Save each new message
+      for (const message of newMessages) {
+        await saveMessage(message);
+      }
+
+      // Update existing messages that may have changed (e.g., streaming content finalized)
+      for (const message of messages) {
+        if (prevIds.has(message.id)) {
+          await updateMessage(message);
+        }
+      }
+
+      previousMessagesRef.current = messages;
+    };
+
+    if (messages.length > 0) {
+      saveNewMessages();
+    }
+  }, [messages, status, saveMessage, updateMessage]);
+
   const sendMessage = useCallback(
     (text: string) => {
       if (!text.trim()) return;
@@ -47,9 +118,29 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     [sendChatMessage]
   );
 
-  const clearMessages = useCallback(() => {
+  const clearMessages = useCallback(async () => {
     setMessages([]);
-  }, [setMessages]);
+    previousMessagesRef.current = [];
+    await clearConversation();
+  }, [setMessages, clearConversation]);
+
+  const startNewConversation = useCallback(async () => {
+    setMessages([]);
+    previousMessagesRef.current = [];
+    hasLoadedRef.current = false;
+    const newId = await createConversation();
+    return newId;
+  }, [setMessages, createConversation]);
+
+  const switchConversation = useCallback(
+    (id: string) => {
+      setMessages([]);
+      previousMessagesRef.current = [];
+      hasLoadedRef.current = false;
+      switchConversationDb(id);
+    },
+    [setMessages, switchConversationDb]
+  );
 
   const isLoading = status === 'submitted' || status === 'streaming';
 
@@ -64,6 +155,10 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         setSelectedModel,
         clearMessages,
         stop,
+        conversationId,
+        switchConversation,
+        startNewConversation,
+        isDbLoading,
       }}
     >
       {children}

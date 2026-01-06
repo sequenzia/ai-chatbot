@@ -66,7 +66,7 @@ function WelcomeScreen() {
 
 function ChatPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { messages, clearMessages } = useChat2();
+  const { messages, startNewConversation } = useChat2();
 
   // Load sidebar state from localStorage
   useEffect(() => {
@@ -81,6 +81,10 @@ function ChatPage() {
     localStorage.setItem('sidebar-open', String(newState));
   };
 
+  const handleNewChat = () => {
+    startNewConversation();
+  };
+
   const showWelcome = messages.length === 0;
 
   return (
@@ -88,7 +92,7 @@ function ChatPage() {
       <Sidebar
         isOpen={isSidebarOpen}
         onToggle={handleSidebarToggle}
-        onNewChat={clearMessages}
+        onNewChat={handleNewChat}
         showWelcomeScreen={showWelcome}
       />
 
