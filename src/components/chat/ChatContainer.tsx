@@ -29,7 +29,7 @@ export function ChatContainer() {
   return (
     <div
       ref={containerRef}
-      className="flex-1 overflow-y-auto pt-20 pb-52"
+      className="flex-1 overflow-y-auto pt-20 pb-60"
       role="log"
       aria-live="polite"
       aria-label="Chat messages"
