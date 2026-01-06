@@ -6,6 +6,7 @@ A modern AI chatbot template built with Next.js 15, Vercel AI SDK, and Tailwind 
 
 - **Multi-Provider Support** - Switch between AI providers (OpenAI, Anthropic, Google, DeepSeek) via AI Gateway
 - **Streaming Responses** - Real-time streaming chat with the AI SDK
+- **Chat History Persistence** - Conversations saved locally with IndexedDB via Dexie
 - **AI Elements UI** - Pre-built components from Vercel AI SDK (conversation, message, prompt-input, model-selector)
 - **Dark/Light Mode** - System-aware theme with manual toggle
 - **Responsive Design** - Mobile-first design with collapsible sidebar
@@ -16,6 +17,7 @@ A modern AI chatbot template built with Next.js 15, Vercel AI SDK, and Tailwind 
 
 - **Framework**: Next.js 15 (App Router, Turbopack)
 - **AI**: Vercel AI SDK v6 with AI Gateway and AI Elements
+- **Storage**: Dexie (IndexedDB) for local chat persistence
 - **Styling**: Tailwind CSS v4
 - **Animation**: Framer Motion
 - **UI Components**: shadcn/ui
@@ -78,7 +80,7 @@ src/
 │   │   ├── suggestion.tsx      # Suggestion buttons
 │   │   └── loader.tsx          # Loading indicators
 │   ├── chat/
-│   │   ├── ChatProvider.tsx    # useChat wrapper + model state
+│   │   ├── ChatProvider.tsx    # useChat wrapper + persistence
 │   │   ├── ChatConversation.tsx # Message list with auto-scroll
 │   │   ├── ChatMessageItem.tsx  # Individual message rendering
 │   │   └── ChatInput.tsx        # Input + model selector
@@ -88,16 +90,23 @@ src/
 │   │   ├── CodeContent.tsx     # Syntax-highlighted code
 │   │   └── CardContent.tsx     # Rich content cards
 │   ├── layout/
-│   │   └── Sidebar.tsx         # Navigation sidebar
+│   │   └── Sidebar.tsx         # Navigation + chat history
 │   ├── providers/
 │   │   └── ThemeProvider.tsx   # Theme context
 │   └── ui/                     # shadcn/ui components
 ├── config.ts                   # Environment configuration
-├── hooks/                      # Custom React hooks
+├── hooks/
+│   ├── useChatPersistence.ts  # Message save/load with IndexedDB
+│   ├── useConversations.ts    # Conversation list management
+│   └── ...                    # Other custom hooks
 ├── lib/
 │   ├── ai/
 │   │   ├── models.ts          # AI model definitions
 │   │   └── tools.ts           # AI tool definitions
+│   ├── db/
+│   │   ├── schema.ts          # Dexie database schema
+│   │   ├── types.ts           # Database type definitions
+│   │   └── index.ts           # Database instance export
 │   ├── motion/variants.ts     # Animation variants
 │   └── utils.ts               # Utility functions
 ├── styles/

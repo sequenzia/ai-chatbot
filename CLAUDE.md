@@ -29,12 +29,13 @@ This is a Next.js 15 + Vercel AI SDK v6 + Tailwind CSS v4 AI chatbot application
 - `src/components/chat/` - Chat components (ChatProvider, ChatConversation, ChatMessageItem, ChatInput)
 - `src/components/ai-elements/` - AI SDK UI components (prompt-input, model-selector, conversation, message, suggestion, loader)
 - `src/components/blocks/` - Interactive content blocks (forms, charts, code, cards)
-- `src/components/layout/` - Layout components (Sidebar)
+- `src/components/layout/` - Layout components (Sidebar with chat history)
 - `src/components/providers/` - React context providers (ThemeProvider)
 - `src/components/ui/` - shadcn/ui component library
 - `src/lib/ai/` - AI model and tool definitions
+- `src/lib/db/` - Dexie IndexedDB schema and database instance
 - `src/lib/motion/` - Animation variants
-- `src/hooks/` - Custom React hooks
+- `src/hooks/` - Custom React hooks (useChatPersistence, useConversations, etc.)
 - `src/styles/` - CSS files (tailwind.css, theme.css)
 - `src/types/` - TypeScript type definitions
 
@@ -51,7 +52,14 @@ This is a Next.js 15 + Vercel AI SDK v6 + Tailwind CSS v4 AI chatbot application
 - `ChatProvider` wraps the app with chat context
 - Uses AI SDK's `Chat` class with `DefaultChatTransport`
 - Model selection persisted in component state
-- `useChat2()` hook exposes: messages, sendMessage, status, selectedModel, clearMessages, stop
+- `useChat2()` hook exposes: messages, sendMessage, status, selectedModel, clearMessages, stop, conversationId, switchConversation, startNewConversation
+
+### Chat Persistence
+- **Dexie** (IndexedDB wrapper) stores conversations and messages locally
+- `useChatPersistence` hook handles message save/load with live queries
+- `useConversations` hook lists and manages all conversations
+- Messages auto-save after streaming completes
+- Sidebar displays real conversation history with switch/delete functionality
 
 ### Chat Components
 - `ChatConversation` - Message list with auto-scroll using AI Elements Conversation
@@ -87,10 +95,14 @@ AI_GATEWAY_API_KEY=your_api_key_here
 | `src/config.ts` | Centralized environment configuration |
 | `src/lib/ai/models.ts` | AI model definitions for model selector |
 | `src/lib/ai/tools.ts` | AI tool definitions (generateForm, generateChart, etc.) |
-| `src/components/chat/ChatProvider.tsx` | Chat state management with AI SDK |
+| `src/lib/db/schema.ts` | Dexie database schema (conversations, messages tables) |
+| `src/hooks/useChatPersistence.ts` | Message persistence with IndexedDB |
+| `src/hooks/useConversations.ts` | Conversation list management |
+| `src/components/chat/ChatProvider.tsx` | Chat state management with AI SDK and persistence |
 | `src/components/chat/ChatConversation.tsx` | Message list with auto-scroll |
 | `src/components/chat/ChatMessageItem.tsx` | Individual message rendering |
 | `src/components/chat/ChatInput.tsx` | Input composer with model selector |
+| `src/components/layout/Sidebar.tsx` | Navigation with chat history list |
 | `src/app/api/chat/route.ts` | Streaming chat API endpoint |
 
 ## Adding New Models
