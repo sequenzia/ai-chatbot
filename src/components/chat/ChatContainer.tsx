@@ -37,8 +37,12 @@ export function ChatContainer() {
       <div className="mx-auto max-w-[calc(100%-2rem)] sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-[1024px] px-4">
         <div className="space-y-8">
           <AnimatePresence mode="popLayout">
-            {messages.map((message) => (
-              <ChatMessage key={message.id} message={message} />
+            {messages.map((message, index) => (
+              <ChatMessage
+                key={message.id}
+                message={message}
+                isStreaming={isLoading && index === messages.length - 1 && message.role === 'assistant'}
+              />
             ))}
           </AnimatePresence>
 

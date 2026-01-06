@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import type { UIMessage } from '@ai-sdk/react';
 import type { ToolUIPart } from 'ai';
+import { Streamdown } from 'streamdown';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
 import { messageVariants } from '@/lib/motion/variants';
@@ -13,6 +14,7 @@ import type { ContentBlock as ContentBlockType } from '@/types/content-blocks';
 
 interface ChatMessageProps {
   message: UIMessage;
+  isStreaming?: boolean;
 }
 
 // Content block tool names
@@ -23,7 +25,7 @@ const CONTENT_BLOCK_TOOLS = [
   'generateCard',
 ];
 
-export function ChatMessage({ message }: ChatMessageProps) {
+export function ChatMessage({ message, isStreaming = false }: ChatMessageProps) {
   const prefersReducedMotion = useReducedMotion();
   const isUser = message.role === 'user';
 
@@ -49,17 +51,31 @@ export function ChatMessage({ message }: ChatMessageProps) {
           switch (part.type) {
             case 'text':
               if (!part.text) return null;
+
+              // User messages: plain text
+              if (isUser) {
+                return (
+                  <div
+                    key={key}
+                    className="rounded-2xl whitespace-pre-wrap bg-primary text-primary-foreground py-2.5 px-5"
+                  >
+                    {part.text}
+                  </div>
+                );
+              }
+
+              // Assistant messages: markdown via StreamDown
               return (
                 <div
                   key={key}
-                  className={cn(
-                    'rounded-2xl whitespace-pre-wrap',
-                    isUser
-                      ? 'bg-primary text-primary-foreground py-2.5 px-5'
-                      : 'bg-card border border-border p-4 md:p-5'
-                  )}
+                  className="rounded-2xl bg-card border border-border p-4 md:p-5"
                 >
-                  {part.text}
+                  <Streamdown
+                    isAnimating={isStreaming}
+                    shikiTheme={['github-light', 'github-dark']}
+                  >
+                    {part.text}
+                  </Streamdown>
                 </div>
               );
 
