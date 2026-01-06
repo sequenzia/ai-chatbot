@@ -11,7 +11,6 @@ import {
   PromptInputTools,
   PromptInputButton,
 } from '@/components/ai-elements/prompt-input';
-import { Suggestions, Suggestion } from '@/components/ai-elements/suggestion';
 import { useChat2 } from './ChatProvider';
 import { MODELS } from '@/lib/ai/models';
 import { SUGGESTIONS } from '@/constants/suggestions';
@@ -73,19 +72,33 @@ export function ChatInput({
               transition={{ duration: prefersReducedMotion ? 0 : 0.15 }}
               className="mb-4"
             >
-              <Suggestions className="flex-wrap justify-center gap-2">
-                {SUGGESTIONS.slice(0, 4).map((suggestion) => (
-                  <Suggestion
-                    key={suggestion.title}
-                    suggestion={suggestion.prompt}
-                    onClick={() => handleSuggestionClick(suggestion.prompt)}
-                    className="flex items-center gap-2"
-                  >
-                    <suggestion.icon className="size-4" />
-                    <span>{suggestion.title}</span>
-                  </Suggestion>
-                ))}
-              </Suggestions>
+              <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-4">
+                {/* Header */}
+                <div className="flex items-center gap-2 mb-4 text-muted-foreground">
+                  <Lightbulb className="size-4" />
+                  <span className="text-sm font-medium">Suggested Prompts</span>
+                </div>
+
+                {/* 2-column grid */}
+                <div className="grid grid-cols-2 gap-3">
+                  {SUGGESTIONS.map((suggestion) => (
+                    <button
+                      key={suggestion.title}
+                      type="button"
+                      onClick={() => handleSuggestionClick(suggestion.prompt)}
+                      className="flex items-start gap-3 p-3 rounded-xl border border-border/50 hover:bg-muted/50 transition-colors text-left"
+                    >
+                      <suggestion.icon className="size-5 text-muted-foreground shrink-0 mt-0.5" />
+                      <div className="min-w-0">
+                        <div className="font-medium text-sm">{suggestion.title}</div>
+                        <div className="text-xs text-muted-foreground line-clamp-2">
+                          {suggestion.prompt}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

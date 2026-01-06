@@ -54,7 +54,9 @@ export function ChatMessageItem({ message, isStreaming = false }: ChatMessageIte
       <Message from={isUser ? 'user' : 'assistant'}>
         <MessageContent
           className={cn(
-            isUser ? 'max-w-[85%] sm:max-w-[75%]' : 'w-full max-w-full'
+            isUser
+              ? 'max-w-[85%] sm:max-w-[75%] !bg-transparent !p-0'
+              : 'w-full max-w-full'
           )}
         >
           {/* Reasoning display (for models that support it) */}

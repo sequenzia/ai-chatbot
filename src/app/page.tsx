@@ -7,7 +7,7 @@ import { ChatProvider, useChat2 } from '@/components/chat/ChatProvider';
 import { ChatConversation } from '@/components/chat/ChatConversation';
 import { ChatInput } from '@/components/chat/ChatInput';
 import { Sidebar } from '@/components/layout/Sidebar';
-import { Suggestions, Suggestion } from '@/components/ai-elements/suggestion';
+import { Suggestion } from '@/components/ai-elements/suggestion';
 import { SUGGESTIONS } from '@/constants/suggestions';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
@@ -39,8 +39,8 @@ function WelcomeScreen() {
         <ChatInput isFixed={false} placeholder="How can I help you today?" />
       </div>
 
-      {/* Suggestions - Using AI Elements */}
-      <Suggestions className="w-full max-w-2xl grid grid-cols-2 md:grid-cols-4 gap-3">
+      {/* Suggestions Grid */}
+      <div className="w-full max-w-2xl grid grid-cols-2 md:grid-cols-4 gap-3">
         {SUGGESTIONS.map((suggestion, index) => (
           <motion.div
             key={suggestion.title}
@@ -59,7 +59,7 @@ function WelcomeScreen() {
             </Suggestion>
           </motion.div>
         ))}
-      </Suggestions>
+      </div>
     </motion.div>
   );
 }
