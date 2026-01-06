@@ -219,7 +219,7 @@ export function Sidebar({
                         onClick={() => handleConversationClick(chat.id)}
                         aria-label={`Open chat: ${chat.title}`}
                         aria-current={chat.id === conversationId ? 'page' : undefined}
-                        className="flex-1 flex flex-col items-start gap-1 p-3 min-h-[44px] text-left"
+                        className="flex-1 flex flex-col items-start gap-1 p-3 min-h-[44px] text-left overflow-hidden min-w-0"
                       >
                         <span className={`text-sm truncate w-full ${
                           chat.id === conversationId

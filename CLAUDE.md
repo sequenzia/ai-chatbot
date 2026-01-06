@@ -23,6 +23,7 @@ This is a Next.js 15 + Vercel AI SDK v6 + Tailwind CSS v4 AI chatbot application
 - `src/app/layout.tsx` - Root layout with ThemeProvider
 - `src/app/page.tsx` - Main chat page with WelcomeScreen
 - `src/app/api/chat/route.ts` - AI streaming endpoint using AI Gateway
+- `src/app/api/generate-title/route.ts` - Title generation endpoint using claude-haiku-4.5
 
 ### Key Directories
 - `src/app/` - Next.js App Router pages and API routes
@@ -35,7 +36,8 @@ This is a Next.js 15 + Vercel AI SDK v6 + Tailwind CSS v4 AI chatbot application
 - `src/lib/ai/` - AI model and tool definitions
 - `src/lib/db/` - Dexie IndexedDB schema and database instance
 - `src/lib/motion/` - Animation variants
-- `src/hooks/` - Custom React hooks (useChatPersistence, useConversations, etc.)
+- `src/hooks/` - Custom React hooks (useChatPersistence, useConversations, useTitleGeneration, etc.)
+- `src/lib/utils/` - Utility functions (message text extraction, truncation)
 - `src/styles/` - CSS files (tailwind.css, theme.css)
 - `src/types/` - TypeScript type definitions
 
@@ -60,6 +62,10 @@ This is a Next.js 15 + Vercel AI SDK v6 + Tailwind CSS v4 AI chatbot application
 - `useConversations` hook lists and manages all conversations
 - Messages auto-save after streaming completes
 - Sidebar displays real conversation history with switch/delete functionality
+- **Delayed creation**: Conversations only created in DB after first message (no orphan records)
+- **Smart titles**: LLM generates title after first user+assistant exchange via `/api/generate-title`
+- **Fallback title**: First 50 characters of user message if title generation fails
+- **Retry logic**: 3 attempts with exponential backoff (1s, 2s, 4s) for title generation
 
 ### Chat Components
 - `ChatConversation` - Message list with auto-scroll using AI Elements Conversation
@@ -92,18 +98,21 @@ AI_GATEWAY_API_KEY=your_api_key_here
 
 | File | Purpose |
 |------|---------|
-| `src/config.ts` | Centralized environment configuration |
+| `src/config.ts` | Centralized environment configuration (including title generation settings) |
 | `src/lib/ai/models.ts` | AI model definitions for model selector |
 | `src/lib/ai/tools.ts` | AI tool definitions (generateForm, generateChart, etc.) |
 | `src/lib/db/schema.ts` | Dexie database schema (conversations, messages tables) |
-| `src/hooks/useChatPersistence.ts` | Message persistence with IndexedDB |
+| `src/lib/utils/message.ts` | Message text extraction and truncation utilities |
+| `src/hooks/useChatPersistence.ts` | Message persistence with IndexedDB (delayed conversation creation) |
 | `src/hooks/useConversations.ts` | Conversation list management |
-| `src/components/chat/ChatProvider.tsx` | Chat state management with AI SDK and persistence |
+| `src/hooks/useTitleGeneration.ts` | LLM title generation with retry logic |
+| `src/components/chat/ChatProvider.tsx` | Chat state management with AI SDK, persistence, and title generation |
 | `src/components/chat/ChatConversation.tsx` | Message list with auto-scroll |
 | `src/components/chat/ChatMessageItem.tsx` | Individual message rendering |
 | `src/components/chat/ChatInput.tsx` | Input composer with model selector |
 | `src/components/layout/Sidebar.tsx` | Navigation with chat history list |
 | `src/app/api/chat/route.ts` | Streaming chat API endpoint |
+| `src/app/api/generate-title/route.ts` | Title generation API endpoint (uses claude-haiku-4.5) |
 
 ## Adding New Models
 
