@@ -1,4 +1,4 @@
-import { convertToModelMessages, streamText, type UIMessage } from 'ai';
+import { convertToModelMessages, streamText, stepCountIs, type UIMessage } from 'ai';
 import { config } from '@/config';
 import { chatTools } from '@/lib/ai/tools';
 import { getModel } from '@/lib/ai/model';
@@ -17,6 +17,7 @@ export async function POST(req: Request) {
       system: SYSTEM_PROMPT,
       messages: await convertToModelMessages(messages),
       tools: chatTools,
+      stopWhen: stepCountIs(3),
     });
 
     return result.toUIMessageStreamResponse();

@@ -2,7 +2,7 @@ import {
   Code,
   Sparkles,
   ChartNoAxesColumnIncreasing,
-  Mail,
+  Globe,
   type LucideIcon,
 } from "lucide-react";
 
@@ -23,15 +23,15 @@ export const SUGGESTIONS: Suggestion[] = [
   {
     title: "Write code",
     description: "Generate a Python decorator",
-    prompt: "Generate a Python decorator that retries a function with exponential backoff.",
+    prompt: "Generate a Python decorator that retries a function with exponential backoff",
     icon: Code,
   },
   {
-    title: "Create a form",
-    description: "Create a feedback form",
+    title: "Search the web",
+    description: "Perform a web search",
     prompt:
-      "Create a feedback form for my website with fields for name, email, rating, and comments",
-    icon: Mail,
+      "Search the web for the latest news in AI and summarize the top findings",
+    icon: Globe,
   },
   {
     title: "Brainstorm",
