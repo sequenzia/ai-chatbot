@@ -22,8 +22,8 @@ export const SUGGESTIONS: Suggestion[] = [
   },
   {
     title: "Write code",
-    description: "Create responsive React components",
-    prompt: "Create a responsive React component using Tailwind CSS",
+    description: "Generate a Python decorator",
+    prompt: "Generate a Python decorator that retries a function with exponential backoff.",
     icon: Code,
   },
   {
