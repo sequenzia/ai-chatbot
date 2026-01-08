@@ -62,6 +62,7 @@ AI_TITLE_TIMEOUT_MS=10000
 | `AI_TITLE_MODEL` | No | `anthropic/claude-haiku-4.5` | Model for title generation |
 | `AI_TITLE_MAX_LENGTH` | No | `50` | Max title length (chars) |
 | `AI_TITLE_TIMEOUT_MS` | No | `10000` | Title generation timeout (ms) |
+| `AI_DEBUG_ON` | No | `false` | Enable AI SDK DevTools |
 
 ### Development
 

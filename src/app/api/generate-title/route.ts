@@ -1,5 +1,6 @@
-import { generateText, gateway } from 'ai';
+import { generateText } from 'ai';
 import { config } from '@/config';
+import { getModel } from '@/lib/ai/model';
 
 export const maxDuration = 15;
 
@@ -52,7 +53,7 @@ export async function POST(req: Request) {
 
     try {
       const result = await generateText({
-        model: gateway(titleGeneration.model),
+        model: getModel(titleGeneration.model),
         prompt,
         abortSignal: controller.signal,
       });

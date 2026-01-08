@@ -1,6 +1,7 @@
-import { convertToModelMessages, streamText, type UIMessage, gateway } from 'ai';
+import { convertToModelMessages, streamText, type UIMessage } from 'ai';
 import { config } from '@/config';
 import { chatTools } from '@/lib/ai/tools';
+import { getModel } from '@/lib/ai/model';
 
 export const maxDuration = 30;
 
@@ -11,7 +12,7 @@ export async function POST(req: Request) {
     const selectedModel = model || config.ai.defaultModel;
 
     const result = streamText({
-      model: gateway(selectedModel),
+      model: getModel(selectedModel),
       system: `You are a helpful assistant with access to tools for creating interactive content.
 
 When appropriate, use the available tools to enhance your responses:
