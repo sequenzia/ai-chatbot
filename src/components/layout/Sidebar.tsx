@@ -47,6 +47,15 @@ export function Sidebar({
   const { conversations, deleteConversation, clearAllConversations } = useConversations();
   const { conversationId, switchConversation, startNewConversation } = useChat2();
 
+  // User placeholder (will be replaced with real auth later)
+  const userName = 'Dev User';
+  const userInitials = userName
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+
   // Calculate sidebar width based on device type
   const getSidebarWidth = () => {
     if (!isOpen) return isMobile ? 0 : 72;
@@ -260,11 +269,11 @@ export function Sidebar({
                 >
                   <div className="size-8 rounded-full bg-sidebar-accent flex items-center justify-center text-sidebar-foreground">
                     <span className="text-xs font-medium">
-                      SS
+                      {userInitials}
                     </span>
                   </div>
                   <span className="flex-1 text-left">
-                    Stephen Sequenzia
+                    {userName}
                   </span>
                 </button>
 
@@ -350,7 +359,7 @@ export function Sidebar({
                   aria-label="User menu"
                   className="size-10 min-h-[44px] min-w-[44px] rounded-full bg-sidebar-accent flex items-center justify-center text-sidebar-foreground font-medium text-xs hover:bg-sidebar-accent/80 transition-colors"
                 >
-                  SS
+                  {userInitials}
                 </button>
 
                 {/* User Menu - Collapsed Sidebar */}
@@ -368,9 +377,9 @@ export function Sidebar({
                       <div className="p-3 border-b border-border">
                         <div className="flex items-center gap-3">
                           <div className="size-8 rounded-full bg-sidebar-accent flex items-center justify-center text-sidebar-foreground">
-                            <span className="text-xs font-medium">SS</span>
+                            <span className="text-xs font-medium">{userInitials}</span>
                           </div>
-                          <span className="text-sm font-medium text-foreground">Stephen Sequenzia</span>
+                          <span className="text-sm font-medium text-foreground">{userName}</span>
                         </div>
                       </div>
                       <button
