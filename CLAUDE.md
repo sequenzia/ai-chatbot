@@ -92,6 +92,7 @@ This is a Next.js 15 + Vercel AI SDK v6 + Tailwind CSS v4 AI chatbot application
 ### Environment Variables
 ```env
 AI_GATEWAY_API_KEY=your_api_key_here
+TAVILY_API_KEY=your_tavily_api_key_here
 ```
 
 ## Key Files
@@ -101,6 +102,7 @@ AI_GATEWAY_API_KEY=your_api_key_here
 | `src/config.ts` | Centralized environment configuration (including title generation settings) |
 | `src/lib/ai/models.ts` | AI model definitions for model selector |
 | `src/lib/ai/tools.ts` | AI tool definitions (generateForm, generateChart, etc.) |
+| `src/lib/ai/tavily.ts` | Tavily web search tool with lazy client initialization |
 | `src/lib/db/schema.ts` | Dexie database schema (conversations, messages tables) |
 | `src/lib/utils/message.ts` | Message text extraction and truncation utilities |
 | `src/hooks/useChatPersistence.ts` | Message persistence with IndexedDB (delayed conversation creation) |

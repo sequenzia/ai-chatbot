@@ -13,6 +13,7 @@ A modern AI chatbot template built with Next.js 15, Vercel AI SDK, and Tailwind 
 - **Responsive Design** - Mobile-first design with collapsible sidebar
 - **Accessibility** - Reduced motion support, proper ARIA labels
 - **Interactive Content Blocks** - Forms, charts, code blocks, and cards via AI tools
+- **Web Search** - Real-time web search via Tavily API for current events and live data
 
 ## Tech Stack
 
@@ -47,6 +48,7 @@ cp .env.example .env.local
 ```env
 # Required
 AI_GATEWAY_API_KEY=your_api_key_here
+TAVILY_API_KEY=your_tavily_api_key_here
 
 # Optional - AI Model Configuration
 AI_DEFAULT_MODEL=anthropic/claude-sonnet-4
@@ -58,6 +60,7 @@ AI_TITLE_TIMEOUT_MS=10000
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `AI_GATEWAY_API_KEY` | Yes | - | API key for AI Gateway |
+| `TAVILY_API_KEY` | Yes | - | API key for Tavily web search |
 | `AI_DEFAULT_MODEL` | No | `anthropic/claude-sonnet-4` | Default model for chat |
 | `AI_TITLE_MODEL` | No | `anthropic/claude-haiku-4.5` | Model for title generation |
 | `AI_TITLE_MAX_LENGTH` | No | `50` | Max title length (chars) |
@@ -122,7 +125,8 @@ src/
 ├── lib/
 │   ├── ai/
 │   │   ├── models.ts          # AI model definitions
-│   │   └── tools.ts           # AI tool definitions
+│   │   ├── tools.ts           # AI tool definitions
+│   │   └── tavily.ts          # Tavily web search tool
 │   ├── db/
 │   │   ├── schema.ts          # Dexie database schema
 │   │   ├── types.ts           # Database type definitions
