@@ -2,6 +2,7 @@ import { convertToModelMessages, streamText, type UIMessage } from 'ai';
 import { config } from '@/config';
 import { chatTools } from '@/lib/ai/tools';
 import { getModel } from '@/lib/ai/model';
+import { SYSTEM_PROMPT } from '@/lib/ai/prompts';
 
 export const maxDuration = 30;
 
@@ -13,15 +14,7 @@ export async function POST(req: Request) {
 
     const result = streamText({
       model: getModel(selectedModel),
-      system: `You are a helpful assistant with access to tools for creating interactive content.
-
-When appropriate, use the available tools to enhance your responses:
-- generateForm: Create interactive forms for collecting user input (surveys, registrations, etc.)
-- generateChart: Create data visualizations (line, bar, pie, or area charts)
-- generateCode: Display code with syntax highlighting
-- generateCard: Create rich content cards with optional media and actions
-
-Important: When you use a tool, do NOT repeat the tool's content in your text response. The tool output will be displayed automatically. Only provide brief context or follow-up if needed.`,
+      system: SYSTEM_PROMPT,
       messages: await convertToModelMessages(messages),
       tools: chatTools,
     });
