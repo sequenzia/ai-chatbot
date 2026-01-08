@@ -45,8 +45,23 @@ cp .env.example .env.local
 ### Environment Variables
 
 ```env
+# Required
 AI_GATEWAY_API_KEY=your_api_key_here
+
+# Optional - AI Model Configuration
+AI_DEFAULT_MODEL=anthropic/claude-sonnet-4
+AI_TITLE_MODEL=anthropic/claude-haiku-4.5
+AI_TITLE_MAX_LENGTH=50
+AI_TITLE_TIMEOUT_MS=10000
 ```
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `AI_GATEWAY_API_KEY` | Yes | - | API key for AI Gateway |
+| `AI_DEFAULT_MODEL` | No | `anthropic/claude-sonnet-4` | Default model for chat |
+| `AI_TITLE_MODEL` | No | `anthropic/claude-haiku-4.5` | Model for title generation |
+| `AI_TITLE_MAX_LENGTH` | No | `50` | Max title length (chars) |
+| `AI_TITLE_TIMEOUT_MS` | No | `10000` | Title generation timeout (ms) |
 
 ### Development
 
