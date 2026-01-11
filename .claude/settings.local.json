@@ -1,7 +1,11 @@
 {
-  "permissions": {
-    "allow": [
-      "mcp__next-devtools__nextjs_docs"
-    ]
+  "enabledMcpjsonServers": [
+    "next-devtools",
+    "shadcn",
+    "chrome-devtools",
+    "ai-elements"
+  ],
+  "enabledPlugins": {
+    "typescript-lsp@claude-plugins-official": true
   }
 }
