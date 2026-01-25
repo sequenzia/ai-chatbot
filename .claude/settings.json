@@ -1,0 +1,19 @@
+{
+  "env": {
+    "CLAUDE_CODE_TASK_LIST_ID": "ai-chatbot"
+  },
+  "enabledMcpjsonServers": [
+    "context7",
+    "next-devtools",
+    "shadcn",
+    "chrome-devtools",
+    "ai-elements"
+  ],
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true
+  },
+  "permissions": {
+    "additionalDirectories": ["/Users/sequenzia/dev/repos/ai/ai-chatbot"]
+  }
+}
