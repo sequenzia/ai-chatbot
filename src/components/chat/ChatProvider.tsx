@@ -173,19 +173,26 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const startNewConversation = useCallback(async () => {
     setMessages([]);
     previousMessagesRef.current = [];
-    hasLoadedRef.current = false;
+    hasLoadedRef.current = true; // Prevent effect from overwriting with stale data
     const newId = await createConversation();
     return newId;
   }, [setMessages, createConversation]);
 
   const switchConversation = useCallback(
-    (id: string) => {
+    async (id: string) => {
+      // Clear UI immediately
       setMessages([]);
       previousMessagesRef.current = [];
-      hasLoadedRef.current = false;
+      hasLoadedRef.current = true; // Mark as loaded to prevent effect from overwriting
       // Existing conversations already have titles, don't regenerate
       titleGeneratedRef.current.add(id);
-      switchConversationDb(id);
+
+      // Fetch and set messages directly - no race condition
+      const messages = await switchConversationDb(id);
+      if (messages.length > 0) {
+        setMessages(messages);
+        previousMessagesRef.current = messages;
+      }
     },
     [setMessages, switchConversationDb]
   );

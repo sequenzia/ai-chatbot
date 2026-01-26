@@ -39,6 +39,18 @@ export function useChatPersistence(options: UseChatPersistenceOptions = {}) {
     []
   );
 
+  // Direct fetch for immediate use (bypasses useLiveQuery reactivity lag)
+  const fetchMessagesForConversation = useCallback(
+    async (convId: string): Promise<UIMessage[]> => {
+      const records = await db.messages
+        .where('conversationId')
+        .equals(convId)
+        .sortBy('createdAt');
+      return convertToUIMessages(records);
+    },
+    [convertToUIMessages]
+  );
+
   // Save a single message (creates conversation if needed)
   const saveMessage = useCallback(
     async (message: UIMessage, fallbackTitle?: string) => {
@@ -146,11 +158,17 @@ export function useChatPersistence(options: UseChatPersistenceOptions = {}) {
     [currentConversationId]
   );
 
-  // Switch to a different conversation (existing conversations are already persisted)
-  const switchConversation = useCallback((id: string) => {
-    isPersistedRef.current = true;
-    setCurrentConversationId(id);
-  }, []);
+  // Switch to a different conversation and return its messages
+  // Returns messages directly to bypass useLiveQuery reactivity lag
+  const switchConversation = useCallback(
+    async (id: string): Promise<UIMessage[]> => {
+      isPersistedRef.current = true;
+      setCurrentConversationId(id);
+      // Fetch and return messages immediately, bypassing useLiveQuery lag
+      return fetchMessagesForConversation(id);
+    },
+    [fetchMessagesForConversation]
+  );
 
   // NOTE: Conversation is NOT created on mount anymore.
   // It will be created on first message save via saveMessage().
