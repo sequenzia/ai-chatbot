@@ -81,8 +81,8 @@ function ChatPage() {
     localStorage.setItem('sidebar-open', String(newState));
   };
 
-  const handleNewChat = () => {
-    startNewConversation();
+  const handleNewChat = async () => {
+    await startNewConversation();
   };
 
   const showWelcome = messages.length === 0;

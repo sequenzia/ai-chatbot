@@ -71,8 +71,8 @@ export function Sidebar({
     }
   }, [isOpen, showUserMenu]);
 
-  const handleConversationClick = (id: string) => {
-    switchConversation(id);
+  const handleConversationClick = async (id: string) => {
+    await switchConversation(id);
     if (isMobile) {
       onToggle(); // Close sidebar on mobile after selecting
     }
