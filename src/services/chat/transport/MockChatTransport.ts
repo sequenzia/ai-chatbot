@@ -178,23 +178,27 @@ function convertToUIMessageChunks(
   const chunks: UIMessageChunk[] = [];
 
   switch (event.type) {
-    case 'text-delta':
-      // Start text if not started
+    case 'text-delta': {
+      // Track the chunk ID locally to ensure text-start and text-delta share the same ID
+      let chunkId: string;
       if (!textStarted) {
-        const id = nanoid();
-        setTextId(id);
+        chunkId = nanoid();
+        setTextId(chunkId);
         setTextStarted(true);
         chunks.push({
           type: 'text-start',
-          id,
+          id: chunkId,
         });
+      } else {
+        chunkId = currentTextId;
       }
       chunks.push({
         type: 'text-delta',
-        id: currentTextId || nanoid(),
+        id: chunkId || nanoid(),
         delta: event.textDelta || '',
       });
       break;
+    }
 
     case 'tool-call':
       // End any pending text

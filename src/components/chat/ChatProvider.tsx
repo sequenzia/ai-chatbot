@@ -38,6 +38,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const previousMessagesRef = useRef<UIMessage[]>([]);
   const hasLoadedRef = useRef(false);
   const titleGeneratedRef = useRef<Set<string>>(new Set());
+  const prevConversationIdRef = useRef<string | null>(null);
 
   // Persistence hook
   const {
