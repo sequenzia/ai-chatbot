@@ -1,7 +1,6 @@
-'use client';
-
 import { useCallback, useRef } from 'react';
 import { config } from '@/config';
+import { getChatService } from '@/services/chat';
 
 interface UseTitleGenerationOptions {
   onTitleGenerated?: (conversationId: string, title: string) => void;
@@ -45,23 +44,17 @@ export function useTitleGeneration(options: UseTitleGenerationOptions = {}) {
 
       const attemptGeneration = async (): Promise<string> => {
         try {
-          const response = await fetch('/api/generate-title', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userMessage, conversationId }),
+          const chatService = getChatService();
+          const response = await chatService.generateTitle({
+            userMessage,
+            conversationId,
           });
 
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-          }
-
-          const data = await response.json();
-
-          if (data.useFallback || !data.title) {
+          if (response.useFallback || !response.title) {
             return fallbackTitle;
           }
 
-          return data.title;
+          return response.title;
         } catch (error) {
           attempts++;
 

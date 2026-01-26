@@ -1,5 +1,3 @@
-'use client';
-
 import { useReducedMotion as useReducedMotionHook } from '@/hooks/useReducedMotion';
 import type { Variants, Transition } from 'motion/react';
 

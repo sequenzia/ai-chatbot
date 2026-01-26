@@ -2,7 +2,7 @@ import {
   Code,
   Sparkles,
   ChartNoAxesColumnIncreasing,
-  Globe,
+  FileText,
   type LucideIcon,
 } from "lucide-react";
 
@@ -27,11 +27,10 @@ export const SUGGESTIONS: Suggestion[] = [
     icon: Code,
   },
   {
-    title: "Search the web",
-    description: "Perform a web search",
-    prompt:
-      "Search the web for the latest news in AI and summarize the top findings",
-    icon: Globe,
+    title: "Build a form",
+    description: "Create an interactive form",
+    prompt: "Create a contact form with name, email, and message fields",
+    icon: FileText,
   },
   {
     title: "Brainstorm",

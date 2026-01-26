@@ -9,7 +9,6 @@ import {
   type CodeContentData,
   type CardContentData,
 } from "@/types/content-blocks";
-import { webSearchTools } from "./tavily";
 
 export const generateForm = tool<FormContentData, FormContentData>({
   description:
@@ -44,5 +43,4 @@ export const chatTools = {
   generateChart,
   generateCode,
   generateCard,
-  ...webSearchTools,
 };

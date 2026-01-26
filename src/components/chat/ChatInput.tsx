@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Check, ChevronDown, Lightbulb, Paperclip, Send } from 'lucide-react';

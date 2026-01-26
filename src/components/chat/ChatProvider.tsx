@@ -1,5 +1,3 @@
-'use client';
-
 import React, {
   createContext,
   useContext,
@@ -10,7 +8,7 @@ import React, {
   useRef,
 } from 'react';
 import { useChat, type UIMessage, Chat } from '@ai-sdk/react';
-import { DefaultChatTransport } from 'ai';
+import { createChatTransport } from '@/services/chat';
 import { MODELS, DEFAULT_MODEL, type ModelId } from '@/lib/ai/models';
 import { useChatPersistence } from '@/hooks/useChatPersistence';
 import { useTitleGeneration } from '@/hooks/useTitleGeneration';
@@ -70,8 +68,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   // Create transport with model in body
   const chat = useMemo(() => {
     return new Chat({
-      transport: new DefaultChatTransport({
-        api: '/api/chat',
+      transport: createChatTransport({
+        model: selectedModel,
         body: { model: selectedModel },
       }),
     });

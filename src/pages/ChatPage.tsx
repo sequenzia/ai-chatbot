@@ -1,5 +1,3 @@
-'use client';
-
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Sparkles } from 'lucide-react';
@@ -64,7 +62,7 @@ function WelcomeScreen() {
   );
 }
 
-function ChatPage() {
+function ChatPageContent() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { messages, startNewConversation } = useChat2();
 
@@ -116,10 +114,10 @@ function ChatPage() {
   );
 }
 
-export default function Page() {
+export function ChatPage() {
   return (
     <ChatProvider>
-      <ChatPage />
+      <ChatPageContent />
     </ChatProvider>
   );
 }
