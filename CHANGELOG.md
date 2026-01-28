@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Change environment variable from `AI_GATEWAY_API_KEY` to `OPENAI_API_KEY`
 
 ### Added
+- Add configurable backend URL via `NEXT_PUBLIC_CHAT_API_URL` environment variable
+  - Enables frontend-only deployment connecting to external backend servers
+  - When unset, uses built-in `/api/chat` and `/api/generate-title` endpoints (default)
 - Add configurable OpenAI API mode via `OPENAI_API_MODE` environment variable
   - `chat-completions`: Use Chat Completions API (default)
   - `responses`: Use Responses API

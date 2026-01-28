@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useRef } from 'react';
-import { config } from '@/config';
+import { config, getApiUrl } from '@/config';
 
 interface UseTitleGenerationOptions {
   onTitleGenerated?: (conversationId: string, title: string) => void;
@@ -45,7 +45,7 @@ export function useTitleGeneration(options: UseTitleGenerationOptions = {}) {
 
       const attemptGeneration = async (): Promise<string> => {
         try {
-          const response = await fetch('/api/generate-title', {
+          const response = await fetch(getApiUrl('generate-title'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userMessage, conversationId }),

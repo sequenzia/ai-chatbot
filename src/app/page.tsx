@@ -31,7 +31,7 @@ function WelcomeScreen() {
         Welcome to AI Chatbot
       </h1>
       <p className="text-muted-foreground mb-8 max-w-md welcome-landscape-hide">
-        Start a conversation with AI powered by multiple providers
+        Ask me anything or choose a suggestion below to get started!
       </p>
 
       {/* Input */}

@@ -35,3 +35,36 @@ export const config = {
     },
   },
 };
+
+// Client-accessible configuration (uses NEXT_PUBLIC_ prefix)
+// These values are embedded at build time
+const clientConfig = {
+  api: {
+    baseUrl: process.env.NEXT_PUBLIC_CHAT_API_URL || '',
+  },
+};
+
+/**
+ * Get the full API URL for a given endpoint.
+ * If NEXT_PUBLIC_CHAT_API_URL is set, uses that as base URL.
+ * Otherwise, uses local /api endpoints.
+ *
+ * @param endpoint - The API endpoint name
+ * @returns The full URL to call
+ *
+ * @example
+ * // With NEXT_PUBLIC_CHAT_API_URL=https://api.example.com
+ * getApiUrl('chat') // => 'https://api.example.com/chat'
+ *
+ * // Without NEXT_PUBLIC_CHAT_API_URL (default)
+ * getApiUrl('chat') // => '/api/chat'
+ */
+export function getApiUrl(endpoint: 'chat' | 'generate-title'): string {
+  const base = clientConfig.api.baseUrl;
+  if (base) {
+    // Custom backend: append endpoint to base URL
+    return `${base.replace(/\/$/, '')}/${endpoint}`;
+  }
+  // Built-in API: use local endpoints
+  return `/api/${endpoint}`;
+}
