@@ -10,7 +10,7 @@ export const MODELS = [
 export type Model = (typeof MODELS)[number];
 export type ModelId = Model['id'];
 
-export const DEFAULT_MODEL = MODELS.find((m) => m.id === 'gpt-4o') ?? MODELS[0];
+export const DEFAULT_MODEL = MODELS.find((m) => m.id === 'gpt-oss-120b') ?? MODELS[0];
 
 export function getModelById(id: string): Model | undefined {
   return MODELS.find((m) => m.id === id);
