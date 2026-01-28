@@ -11,10 +11,11 @@ import React, {
 } from 'react';
 import { useChat, type UIMessage, Chat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
-import { MODELS, DEFAULT_MODEL, type ModelId } from '@/lib/ai/models';
+import { MODELS, DEFAULT_MODEL, type ModelId, type ReasoningLevel } from '@/lib/ai/models';
 import { useChatPersistence } from '@/hooks/useChatPersistence';
 import { useTitleGeneration } from '@/hooks/useTitleGeneration';
 import { useConversations } from '@/hooks/useConversations';
+import { useReasoningLevel } from '@/hooks/useReasoningLevel';
 import { getTextFromMessage } from '@/lib/utils/message';
 
 interface ChatContextType {
@@ -24,6 +25,10 @@ interface ChatContextType {
   isLoading: boolean;
   selectedModel: ModelId;
   setSelectedModel: (model: ModelId) => void;
+  // Reasoning level
+  reasoningLevel: ReasoningLevel | undefined;
+  setReasoningLevel: (level: ReasoningLevel) => void;
+  supportsReasoning: boolean;
   clearMessages: () => void;
   stop: () => void;
   // Persistence-related
@@ -37,6 +42,7 @@ const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [selectedModel, setSelectedModel] = useState<ModelId>(DEFAULT_MODEL.id);
+  const { reasoningLevel, setReasoningLevel, supportsReasoning } = useReasoningLevel(selectedModel);
   const previousMessagesRef = useRef<UIMessage[]>([]);
   const hasLoadedRef = useRef(false);
   const titleGeneratedRef = useRef<Set<string>>(new Set());
@@ -67,15 +73,15 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     },
   });
 
-  // Create transport with model in body
+  // Create transport with model and reasoning level in body
   const chat = useMemo(() => {
     return new Chat({
       transport: new DefaultChatTransport({
         api: '/api/chat',
-        body: { model: selectedModel },
+        body: { model: selectedModel, reasoningLevel },
       }),
     });
-  }, [selectedModel]);
+  }, [selectedModel, reasoningLevel]);
 
   const {
     messages,
@@ -209,6 +215,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         isLoading,
         selectedModel,
         setSelectedModel,
+        reasoningLevel,
+        setReasoningLevel,
+        supportsReasoning,
         clearMessages,
         stop,
         conversationId,

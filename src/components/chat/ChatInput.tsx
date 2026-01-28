@@ -24,7 +24,14 @@ import {
   ModelSelectorName,
 } from '@/components/ai-elements/model-selector';
 import { useChat2 } from './ChatProvider';
-import { MODELS } from '@/lib/ai/models';
+import { MODELS, REASONING_LEVELS } from '@/lib/ai/models';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { SUGGESTIONS } from '@/constants/suggestions';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
@@ -39,7 +46,17 @@ export function ChatInput({
   isFixed = true,
   placeholder = 'Ask anything...',
 }: ChatInputProps) {
-  const { sendMessage, isLoading, selectedModel, setSelectedModel, messages, status } = useChat2();
+  const {
+    sendMessage,
+    isLoading,
+    selectedModel,
+    setSelectedModel,
+    reasoningLevel,
+    setReasoningLevel,
+    supportsReasoning,
+    messages,
+    status,
+  } = useChat2();
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [modelSelectorOpen, setModelSelectorOpen] = useState(false);
   const prefersReducedMotion = useReducedMotion();
@@ -207,6 +224,22 @@ export function ChatInput({
                   </ModelSelectorList>
                 </ModelSelectorContent>
               </ModelSelector>
+
+              {/* Reasoning Level Selector - only shown for supported models */}
+              {supportsReasoning && reasoningLevel && (
+                <Select value={reasoningLevel} onValueChange={setReasoningLevel}>
+                  <SelectTrigger className="h-9 w-[100px] rounded-full border-none bg-transparent hover:bg-muted/50">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {REASONING_LEVELS.map((level) => (
+                      <SelectItem key={level} value={level}>
+                        {level.charAt(0).toUpperCase() + level.slice(1)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
 
               <PromptInputSubmit
                 status={status}

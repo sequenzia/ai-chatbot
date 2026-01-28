@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Change environment variable from `AI_GATEWAY_API_KEY` to `OPENAI_API_KEY`
 
 ### Added
+- Add configurable reasoning level for supported models (none, low, medium, high)
+  - Reasoning selector dropdown appears next to model selector for GPT-5 series
+  - Per-model reasoning level persisted in localStorage
+  - Reasoning effort passed to OpenAI API via `providerOptions`
 - Add configurable OpenAI API mode via `OPENAI_API_MODE` environment variable
   - `chat-completions`: Use Chat Completions API (default)
   - `responses`: Use Responses API
