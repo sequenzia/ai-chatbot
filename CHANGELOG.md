@@ -9,3 +9,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - Fix reasoning message display not showing actual reasoning text content
+- Fix reasoning panel auto-collapse after streaming ends
