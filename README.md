@@ -18,19 +18,49 @@ AI Chatbot is a modular, feature-rich chat application that provides real-time s
 - **Responsive Design** - Mobile-first design with collapsible sidebar
 - **Accessibility** - Reduced motion support, proper ARIA labels
 
+## Architecture
+
+This application follows a **modular monolith** architecture with a local-first data strategy. The codebase is organized into feature-based modules with clear boundaries and well-defined interfaces.
+
+### Design Patterns
+
+| Pattern | Implementation | Purpose |
+|---------|----------------|---------|
+| **Provider** | `ChatProvider`, `ThemeProvider` | Centralized state management via React Context |
+| **Factory** | `getModel()` in `lib/ai/models.ts` | Dynamic AI model instantiation |
+| **Repository** | Dexie abstractions in `lib/db/` | Data access layer for IndexedDB |
+| **Observer** | `useLiveQuery()` hooks | Reactive UI updates from database changes |
+| **Strategy** | Tool definitions in `lib/ai/tools.ts` | Pluggable AI tool implementations |
+
+### Data Flow
+
+```
+User Input --> ChatProvider --> AI SDK Transport --> /api/chat --> OpenAI
+                    |                                    |
+                    v                                    v
+              IndexedDB <-- useChatPersistence <-- Streaming Response
+```
+
+### Key Technical Decisions
+
+- **Delayed Conversation Creation**: Conversations are only persisted to IndexedDB after the first message, preventing orphan records from abandoned sessions
+- **Resilient Title Generation**: Uses exponential backoff retry (3 attempts at 1s, 2s, 4s intervals) for LLM-generated titles with graceful fallback to message truncation
+- **State Synchronization**: Refs are used alongside state to prevent race conditions during rapid user interactions
+
 ## Tech Stack
 
-| Category | Technologies |
-|----------|--------------|
-| Framework | Next.js 15 (App Router, Turbopack) |
-| AI | Vercel AI SDK v6 with @ai-sdk/openai |
-| Storage | Dexie 4.x (IndexedDB wrapper) |
-| Styling | Tailwind CSS v4, class-variance-authority |
-| Animation | Framer Motion (motion) |
-| Forms | react-hook-form, Zod validation |
-| Charts | Recharts |
-| Syntax Highlighting | Shiki |
-| UI Components | shadcn/ui, Radix UI primitives |
+| Category | Technologies | Version |
+|----------|--------------|---------|
+| Framework | Next.js (App Router, Turbopack) | 15.0.0+ |
+| React | React | 18.3.1 |
+| AI | Vercel AI SDK with @ai-sdk/openai | 6.0.12 / 3.0.21 |
+| Storage | Dexie (IndexedDB wrapper) | 4.2.1 |
+| Styling | Tailwind CSS, class-variance-authority | 4.0.0+ |
+| Animation | Framer Motion (motion) | 12.23.24 |
+| Forms | react-hook-form, Zod validation | 7.55.0 / 3.23.0 |
+| Charts | Recharts | 2.15.2 |
+| Syntax Highlighting | Shiki | 3.20.0 |
+| UI Components | shadcn/ui, Radix UI primitives | - |
 
 ## Getting Started
 
