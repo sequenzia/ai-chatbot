@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Change environment variable from `AI_GATEWAY_API_KEY` to `OPENAI_API_KEY`
 
 ### Added
+- Add configurable OpenAI API mode via `OPENAI_API_MODE` environment variable
+  - `chat-completions`: Use Chat Completions API (default)
+  - `responses`: Use Responses API
 - API key validation with clear error message when `OPENAI_API_KEY` is missing
 - Model ID validation in `getModel()` function
 

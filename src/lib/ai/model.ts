@@ -17,6 +17,7 @@ const openai = createOpenAI({ apiKey });
 /**
  * Get a language model, optionally wrapped with DevTools middleware.
  * DevTools is enabled when AI_DEBUG_ON=true in environment.
+ * API mode is controlled by OPENAI_API_MODE environment variable.
  */
 export function getModel(modelId: string): LanguageModel {
   const validModel = MODELS.find((m) => m.id === modelId);
@@ -26,7 +27,11 @@ export function getModel(modelId: string): LanguageModel {
     );
   }
 
-  const baseModel = openai(modelId);
+  // Select API based on config: chat-completions (default) or responses
+  const baseModel =
+    config.ai.apiMode === 'responses'
+      ? openai.responses(modelId)
+      : openai.chat(modelId);
 
   if (config.ai.debug) {
     return wrapLanguageModel({
