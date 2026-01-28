@@ -1,4 +1,9 @@
 {
+    "permissions": {
+    "additionalDirectories": [
+      "/Users/sequenzia/dev/repos/mamba-server"
+    ]
+  },
   "enabledMcpjsonServers": [
     "next-devtools",
     "shadcn",

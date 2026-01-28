@@ -8,7 +8,7 @@ export const maxDuration = 30;
 
 export async function POST(req: Request) {
   try {
-    const { messages, model }: { messages: UIMessage[]; model?: string } = await req.json();
+    const { messages, model, agent }: { messages: UIMessage[]; model?: string; agent?: string } = await req.json();
 
     const selectedModel = model || config.ai.defaultModel;
 

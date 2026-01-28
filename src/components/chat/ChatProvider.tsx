@@ -73,7 +73,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     return new Chat({
       transport: new DefaultChatTransport({
         api: getApiUrl('chat'),
-        body: { model: selectedModel },
+        body: { model: selectedModel, agent: 'main' },
       }),
     });
   }, [selectedModel]);
