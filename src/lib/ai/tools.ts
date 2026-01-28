@@ -9,6 +9,7 @@ import {
   type CodeContentData,
   type CardContentData,
 } from "@/types/content-blocks";
+import { config } from "@/config";
 import { webSearchTools } from "./tavily";
 
 export const generateForm = tool<FormContentData, FormContentData>({
@@ -44,5 +45,5 @@ export const chatTools = {
   generateChart,
   generateCode,
   generateCard,
-  ...webSearchTools,
+  ...(config.ai.webSearch.enabled ? webSearchTools : {}),
 };
