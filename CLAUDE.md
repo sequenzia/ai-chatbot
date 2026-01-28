@@ -22,8 +22,8 @@ This is a Next.js 15 + Vercel AI SDK v6 + Tailwind CSS v4 AI chatbot application
 ### Entry Points
 - `src/app/layout.tsx` - Root layout with ThemeProvider
 - `src/app/page.tsx` - Main chat page with WelcomeScreen
-- `src/app/api/chat/route.ts` - AI streaming endpoint using AI Gateway
-- `src/app/api/generate-title/route.ts` - Title generation endpoint using claude-haiku-4.5
+- `src/app/api/chat/route.ts` - AI streaming endpoint using OpenAI API
+- `src/app/api/generate-title/route.ts` - Title generation endpoint using gpt-4o-mini
 
 ### Key Directories
 - `src/app/` - Next.js App Router pages and API routes
@@ -43,7 +43,7 @@ This is a Next.js 15 + Vercel AI SDK v6 + Tailwind CSS v4 AI chatbot application
 
 ### AI SDK Integration
 - **AI SDK v6** with `useChat` hook from `@ai-sdk/react`
-- **AI Gateway** for multi-provider support (OpenAI, Anthropic, Google, DeepSeek, Baseten)
+- **OpenAI API** via `@ai-sdk/openai` for chat completions
 - **AI Elements** UI components from `@ai-sdk/react` (conversation, message, prompt-input, model-selector)
 - **Chat class** with `DefaultChatTransport` for API communication
 - **UIMessage** type for message handling with parts-based content
@@ -91,7 +91,7 @@ This is a Next.js 15 + Vercel AI SDK v6 + Tailwind CSS v4 AI chatbot application
 
 ### Environment Variables
 ```env
-AI_GATEWAY_API_KEY=your_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
 TAVILY_API_KEY=your_tavily_api_key_here
 ```
 
@@ -114,14 +114,14 @@ TAVILY_API_KEY=your_tavily_api_key_here
 | `src/components/chat/ChatInput.tsx` | Input composer with model selector |
 | `src/components/layout/Sidebar.tsx` | Navigation with chat history list |
 | `src/app/api/chat/route.ts` | Streaming chat API endpoint |
-| `src/app/api/generate-title/route.ts` | Title generation API endpoint (uses claude-haiku-4.5) |
+| `src/app/api/generate-title/route.ts` | Title generation API endpoint (uses gpt-4o-mini) |
 
 ## Adding New Models
 
 Edit `src/lib/ai/models.ts`:
 ```typescript
 export const MODELS = [
-  { id: 'provider/model-name', name: 'Display Name', provider: 'provider' },
+  { id: 'gpt-4o', name: 'GPT-4o', provider: 'openai' },
 ] as const;
 ```
 
