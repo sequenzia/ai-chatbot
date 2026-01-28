@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import type { UIMessage } from '@ai-sdk/react';
-import type { ToolUIPart } from 'ai';
+import type { ToolUIPart, ReasoningUIPart } from 'ai';
 import { Streamdown } from 'streamdown';
 import {
   Message,
@@ -41,7 +41,7 @@ export function ChatMessageItem({ message, isStreaming = false }: ChatMessageIte
   // Extract reasoning part if present
   const reasoningPart = message.parts?.find(
     (part) => part.type === 'reasoning'
-  ) as { type: 'reasoning'; reasoning: string } | undefined;
+  ) as ReasoningUIPart | undefined;
 
   return (
     <motion.div
@@ -60,10 +60,13 @@ export function ChatMessageItem({ message, isStreaming = false }: ChatMessageIte
           )}
         >
           {/* Reasoning display (for models that support it) */}
-          {reasoningPart && !isUser && (
-            <Reasoning isStreaming={isStreaming} defaultOpen={isStreaming}>
+          {reasoningPart && reasoningPart.text && !isUser && (
+            <Reasoning
+              isStreaming={isStreaming && reasoningPart.state === 'streaming'}
+              defaultOpen={isStreaming && reasoningPart.state === 'streaming'}
+            >
               <ReasoningTrigger />
-              <ReasoningContent>{reasoningPart.reasoning}</ReasoningContent>
+              <ReasoningContent>{reasoningPart.text}</ReasoningContent>
             </Reasoning>
           )}
 
