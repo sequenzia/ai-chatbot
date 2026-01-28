@@ -1,28 +1,36 @@
 # AI Chatbot
 
-A modern AI chatbot template built with Next.js 15, Vercel AI SDK, and Tailwind CSS v4.
+A modern AI chatbot template built with Next.js 15, Vercel AI SDK v6, and Tailwind CSS v4.
 
-## Features
+## Overview
 
-- **Multi-Provider Support** - Switch between AI providers (OpenAI, Anthropic, Google, DeepSeek) via AI Gateway
-- **Streaming Responses** - Real-time streaming chat with the AI SDK
+AI Chatbot is a modular, feature-rich chat application that provides real-time streaming conversations with OpenAI models. Built with a clean separation of concerns, the architecture uses a Provider Pattern for state management and local-first persistence with IndexedDB.
+
+### Key Features
+
+- **Streaming Responses** - Real-time streaming chat powered by Vercel AI SDK v6
 - **Chat History Persistence** - Conversations saved locally with IndexedDB via Dexie
 - **Smart Title Generation** - LLM-powered conversation titles generated automatically after first exchange
 - **AI Elements UI** - Pre-built components from Vercel AI SDK (conversation, message, prompt-input, model-selector)
+- **Interactive Content Blocks** - Forms, charts, code blocks, and cards via AI tools
+- **Web Search** - Optional real-time web search via Tavily API for current events and live data
 - **Dark/Light Mode** - System-aware theme with manual toggle
 - **Responsive Design** - Mobile-first design with collapsible sidebar
 - **Accessibility** - Reduced motion support, proper ARIA labels
-- **Interactive Content Blocks** - Forms, charts, code blocks, and cards via AI tools
-- **Web Search** - Real-time web search via Tavily API for current events and live data
 
 ## Tech Stack
 
-- **Framework**: Next.js 15 (App Router, Turbopack)
-- **AI**: Vercel AI SDK v6 with AI Gateway and AI Elements
-- **Storage**: Dexie (IndexedDB) for local chat persistence
-- **Styling**: Tailwind CSS v4
-- **Animation**: Framer Motion
-- **UI Components**: shadcn/ui
+| Category | Technologies |
+|----------|--------------|
+| Framework | Next.js 15 (App Router, Turbopack) |
+| AI | Vercel AI SDK v6 with @ai-sdk/openai |
+| Storage | Dexie 4.x (IndexedDB wrapper) |
+| Styling | Tailwind CSS v4, class-variance-authority |
+| Animation | Framer Motion (motion) |
+| Forms | react-hook-form, Zod validation |
+| Charts | Recharts |
+| Syntax Highlighting | Shiki |
+| UI Components | shadcn/ui, Radix UI primitives |
 
 ## Getting Started
 
@@ -40,32 +48,32 @@ npm install
 # Copy environment variables
 cp .env.example .env.local
 
-# Add your AI Gateway API key to .env.local
+# Add your OpenAI API key to .env.local
 ```
 
 ### Environment Variables
 
 ```env
 # Required
-AI_GATEWAY_API_KEY=your_api_key_here
-TAVILY_API_KEY=your_tavily_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
 
-# Optional - AI Model Configuration
-AI_DEFAULT_MODEL=anthropic/claude-sonnet-4
-AI_TITLE_MODEL=anthropic/claude-haiku-4.5
-AI_TITLE_MAX_LENGTH=50
-AI_TITLE_TIMEOUT_MS=10000
+# Optional - Web Search (disabled by default)
+TAVILY_API_KEY=your_tavily_api_key_here
+WEB_SEARCH_ENABLED=true
 ```
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `AI_GATEWAY_API_KEY` | Yes | - | API key for AI Gateway |
-| `TAVILY_API_KEY` | Yes | - | API key for Tavily web search |
-| `AI_DEFAULT_MODEL` | No | `anthropic/claude-sonnet-4` | Default model for chat |
-| `AI_TITLE_MODEL` | No | `anthropic/claude-haiku-4.5` | Model for title generation |
+| `OPENAI_API_KEY` | Yes | - | OpenAI API key |
+| `TAVILY_API_KEY` | No | - | Tavily API key for web search |
+| `WEB_SEARCH_ENABLED` | No | `false` | Enable web search tool |
+| `OPENAI_API_MODE` | No | `chat-completions` | API mode (`chat-completions` or `responses`) |
+| `AI_DEFAULT_MODEL` | No | `gpt-4o` | Default model for chat |
+| `AI_TITLE_MODEL` | No | `gpt-4o-mini` | Model for title generation |
 | `AI_TITLE_MAX_LENGTH` | No | `50` | Max title length (chars) |
 | `AI_TITLE_TIMEOUT_MS` | No | `10000` | Title generation timeout (ms) |
 | `AI_DEBUG_ON` | No | `false` | Enable AI SDK DevTools |
+| `NEXT_PUBLIC_CHAT_API_URL` | No | - | Custom backend URL for frontend-only deployments |
 
 ### Development
 
@@ -86,74 +94,41 @@ npm start
 
 ```
 src/
-├── app/
+├── app/                        # Next.js App Router
 │   ├── api/
-│   │   ├── chat/route.ts          # AI streaming endpoint
-│   │   └── generate-title/route.ts # Title generation endpoint
-│   ├── globals.css             # Global styles
-│   ├── layout.tsx              # Root layout
+│   │   ├── chat/               # AI streaming endpoint
+│   │   └── generate-title/     # Title generation endpoint
+│   ├── layout.tsx              # Root layout with ThemeProvider
 │   └── page.tsx                # Main chat page
 ├── components/
 │   ├── ai-elements/            # AI SDK UI components
-│   │   ├── conversation.tsx    # Conversation wrapper
-│   │   ├── message.tsx         # Message components
-│   │   ├── prompt-input.tsx    # Input textarea
-│   │   ├── model-selector.tsx  # Model picker dialog
-│   │   ├── suggestion.tsx      # Suggestion buttons
-│   │   └── loader.tsx          # Loading indicators
-│   ├── chat/
-│   │   ├── ChatProvider.tsx    # useChat wrapper + persistence
-│   │   ├── ChatConversation.tsx # Message list with auto-scroll
-│   │   ├── ChatMessageItem.tsx  # Individual message rendering
-│   │   └── ChatInput.tsx        # Input + model selector
-│   ├── blocks/                 # Interactive content blocks
-│   │   ├── FormContent.tsx     # Dynamic form rendering
-│   │   ├── ChartContent.tsx    # Data visualization
-│   │   ├── CodeContent.tsx     # Syntax-highlighted code
-│   │   └── CardContent.tsx     # Rich content cards
-│   ├── layout/
-│   │   └── Sidebar.tsx         # Navigation + chat history
-│   ├── providers/
-│   │   └── ThemeProvider.tsx   # Theme context
-│   └── ui/                     # shadcn/ui components
-├── config.ts                   # Environment configuration
-├── hooks/
-│   ├── useChatPersistence.ts  # Message save/load with IndexedDB
-│   ├── useConversations.ts    # Conversation list management
-│   ├── useTitleGeneration.ts  # LLM title generation with retry
-│   └── ...                    # Other custom hooks
+│   ├── blocks/                 # Interactive content blocks (forms, charts, code, cards)
+│   ├── chat/                   # Chat components (Provider, Conversation, Input)
+│   ├── layout/                 # Layout components (Sidebar)
+│   ├── providers/              # React context providers
+│   └── ui/                     # shadcn/ui component library
+├── hooks/                      # Custom React hooks
 ├── lib/
-│   ├── ai/
-│   │   ├── models.ts          # AI model definitions
-│   │   ├── tools.ts           # AI tool definitions
-│   │   └── tavily.ts          # Tavily web search tool
-│   ├── db/
-│   │   ├── schema.ts          # Dexie database schema
-│   │   ├── types.ts           # Database type definitions
-│   │   └── index.ts           # Database instance export
-│   ├── motion/variants.ts     # Animation variants
-│   └── utils.ts               # Utility functions
-├── styles/
-│   ├── tailwind.css           # Tailwind imports
-│   └── theme.css              # CSS custom properties
-└── types/
-    └── message.ts             # TypeScript types
+│   ├── ai/                     # AI model and tool definitions
+│   ├── db/                     # Dexie IndexedDB schema
+│   ├── motion/                 # Animation variants
+│   └── utils/                  # Utility functions
+├── styles/                     # CSS files (Tailwind, theme)
+└── types/                      # TypeScript type definitions
 ```
 
 ## Available Models
 
-The chatbot supports multiple AI providers through AI Gateway:
+The chatbot supports OpenAI models:
 
-| Model | Provider |
-|-------|----------|
-| GPT-OSS 120B | Baseten |
-| GPT-5 Nano | OpenAI |
-| GPT-5 Mini | OpenAI |
-| GPT-4o | OpenAI |
-| GPT-4o Mini | OpenAI |
-| Claude Haiku 4.5 | Anthropic |
-| Gemini 2.5 Flash Lite | Google |
-| DeepSeek V3.2 | DeepSeek |
+| Model | ID |
+|-------|-----|
+| GPT-5.2 | `gpt-5.2` |
+| GPT-5 | `gpt-5` |
+| GPT-5 Mini | `gpt-5-mini` |
+| GPT-5 Nano | `gpt-5-nano` |
+| GPT-4o | `gpt-4o` |
+| GPT-4o Mini | `gpt-4o-mini` |
 
 ## Customization
 
@@ -163,14 +138,24 @@ Edit `src/lib/ai/models.ts`:
 
 ```typescript
 export const MODELS = [
-  { id: 'provider/model-name', name: 'Display Name', provider: 'provider' },
-  // ...
+  { id: 'gpt-4o', name: 'GPT-4o', provider: 'openai' },
+  // Add new models here
 ] as const;
 ```
 
 ### Theming
 
-Theme variables are defined in `src/styles/theme.css` using CSS custom properties. The theme supports both light and dark modes.
+Theme variables are defined in `src/styles/theme.css` using CSS custom properties. The theme supports both light and dark modes with the `.dark` class on the `<html>` element.
+
+### Custom Backend
+
+The app supports frontend-only deployments connecting to a custom backend:
+
+```env
+NEXT_PUBLIC_CHAT_API_URL=https://api.example.com
+```
+
+This will route requests to `https://api.example.com/chat` and `https://api.example.com/generate-title`.
 
 ## License
 
