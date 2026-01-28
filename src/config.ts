@@ -30,5 +30,8 @@ export const config = {
       maxLength: parseInt(process.env.AI_TITLE_MAX_LENGTH || '50', 10),
       timeoutMs: parseInt(process.env.AI_TITLE_TIMEOUT_MS || '10000', 10),
     },
+    webSearch: {
+      enabled: process.env.WEB_SEARCH_ENABLED === 'true',
+    },
   },
 };
