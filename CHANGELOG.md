@@ -15,6 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Change environment variable from `AI_GATEWAY_API_KEY` to `OPENAI_API_KEY`
 
 ### Added
+- Add comprehensive MkDocs documentation for developers
+  - Architecture overview with Mermaid dependency graphs
+  - Data flow diagrams for message lifecycle, tool execution, and persistence
+  - Getting started guide with environment setup and project structure
+  - Module documentation for chat system, AI integration, rendering blocks, and persistence
+  - Step-by-step tutorials for adding AI tools and extending persistence
+  - API and component reference documentation
+  - Supports Material theme with light/dark mode, code highlighting, and navigation tabs
 - Add configurable backend URL via `NEXT_PUBLIC_CHAT_API_URL` environment variable
   - Enables frontend-only deployment connecting to external backend servers
   - When unset, uses built-in `/api/chat` and `/api/generate-title` endpoints (default)
