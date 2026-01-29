@@ -53,7 +53,7 @@ Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
 <div class="grid cards" markdown>
 
--   :material-architecture:{ .lg .middle } **Architecture**
+-   :material-sitemap:{ .lg .middle } **Architecture**
 
     ---
 

@@ -20,7 +20,7 @@ graph TB
     end
 
     subgraph External["External"]
-        API[/api/chat]
+        API["/api/chat"]
         DB[(IndexedDB)]
     end
 

@@ -12,7 +12,7 @@ graph TB
     end
 
     subgraph API["API Route"]
-        Route[/api/chat]
+        Route["/api/chat"]
         GetModel[getModel]
         StreamText[streamText]
     end

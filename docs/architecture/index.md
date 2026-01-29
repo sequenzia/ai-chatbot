@@ -33,8 +33,8 @@ graph TB
     end
 
     subgraph AI["AI Integration"]
-        APIChat[/api/chat]
-        APITitle[/api/generate-title]
+        APIChat["/api/chat"]
+        APITitle["/api/generate-title"]
         Model[getModel]
         Tools[AI Tools]
         Prompts[System Prompts]
@@ -145,8 +145,8 @@ graph LR
     end
 
     subgraph API["API Routes"]
-        Chat[/api/chat]
-        Title[/api/generate-title]
+        Chat["/api/chat"]
+        Title["/api/generate-title"]
     end
 
     subgraph AILib["AI Library"]
