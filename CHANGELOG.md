@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Change environment variable from `AI_GATEWAY_API_KEY` to `OPENAI_API_KEY`
 
 ### Added
+- Add `agent` parameter to chat API requests with hardcoded value "main" for mamba-server backend compatibility
 - Add comprehensive MkDocs documentation for developers
   - Architecture overview with Mermaid dependency graphs
   - Data flow diagrams for message lifecycle, tool execution, and persistence

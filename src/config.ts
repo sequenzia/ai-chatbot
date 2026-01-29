@@ -23,7 +23,7 @@ export const config = {
   ai: {
     openaiApiKey: process.env.OPENAI_API_KEY,
     apiMode: getApiMode(),
-    defaultModel: process.env.AI_DEFAULT_MODEL || 'gpt-4o',
+    defaultModel: process.env.AI_DEFAULT_MODEL || 'gpt-oss-120b',
     debug: process.env.AI_DEBUG_ON === 'true',
     titleGeneration: {
       model: process.env.AI_TITLE_MODEL || 'gpt-4o-mini',
