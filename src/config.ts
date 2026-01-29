@@ -41,6 +41,7 @@ export const config = {
 const clientConfig = {
   api: {
     baseUrl: process.env.NEXT_PUBLIC_CHAT_API_URL || '',
+    agent: process.env.NEXT_PUBLIC_AI_AGENT || undefined,
   },
 };
 
@@ -67,4 +68,13 @@ export function getApiUrl(endpoint: 'chat' | 'generate-title'): string {
   }
   // Built-in API: use local endpoints
   return `/api/${endpoint}`;
+}
+
+/**
+ * Get the configured agent for chat API requests.
+ * Returns undefined if not configured, which means the agent
+ * parameter will be omitted from requests.
+ */
+export function getAgent(): string | undefined {
+  return clientConfig.api.agent;
 }

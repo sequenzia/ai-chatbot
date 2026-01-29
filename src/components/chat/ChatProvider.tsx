@@ -12,7 +12,7 @@ import React, {
 import { useChat, type UIMessage, Chat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { MODELS, DEFAULT_MODEL, type ModelId } from '@/lib/ai/models';
-import { getApiUrl } from '@/config';
+import { getApiUrl, getAgent } from '@/config';
 import { useChatPersistence } from '@/hooks/useChatPersistence';
 import { useTitleGeneration } from '@/hooks/useTitleGeneration';
 import { useConversations } from '@/hooks/useConversations';
@@ -70,10 +70,14 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 
   // Create transport with model in body
   const chat = useMemo(() => {
+    const agent = getAgent();
     return new Chat({
       transport: new DefaultChatTransport({
         api: getApiUrl('chat'),
-        body: { model: selectedModel, agent: 'main' },
+        body: {
+          model: selectedModel,
+          ...(agent && { agent }),
+        },
       }),
     });
   }, [selectedModel]);
