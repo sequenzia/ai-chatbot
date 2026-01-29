@@ -12,7 +12,7 @@ import { useChat2 } from './ChatProvider';
 import { ChatMessageItem } from './ChatMessageItem';
 
 export function ChatConversation() {
-  const { messages, isLoading } = useChat2();
+  const { messages, isLoading, status } = useChat2();
 
   if (messages.length === 0) {
     return null;
@@ -32,7 +32,7 @@ export function ChatConversation() {
         </AnimatePresence>
 
         {/* Loading indicator when waiting for assistant response */}
-        {isLoading && messages[messages.length - 1]?.role === 'user' && (
+        {status === 'submitted' && (
           <div className="flex items-center gap-2 rounded-2xl bg-card border border-border p-4 w-fit">
             <Loader size={16} />
             <span className="text-sm text-muted-foreground">Thinking...</span>
