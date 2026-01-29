@@ -60,6 +60,26 @@ ai-chatbot/
 - **Lazy Initialization:** Tavily client created on first use in `src/lib/ai/tavily.ts`
 - **Retry with Exponential Backoff:** Title generation retries 3x with 1s, 2s, 4s delays
 
+### Module Responsibilities
+
+**Chat Core** (`src/components/chat/`):
+- `ChatProvider.tsx` - Central context provider wrapping AI SDK's useChat, persistence hooks, and title generation
+- `ChatConversation.tsx` - Message list with auto-scroll
+- `ChatMessageItem.tsx` - Individual message rendering with tool results
+- `ChatInput.tsx` - Input composer with model selector
+
+**AI Integration Layer** (`src/lib/ai/`):
+- `model.ts` - Factory function `getModel()` creating OpenAI instances with optional DevTools middleware
+- `models.ts` - Model catalog with GPT-5 variants and GPT-4o models
+- `tools.ts` - Five AI tools (generateForm, generateChart, generateCode, generateCard, webSearch)
+- `tavily.ts` - Lazy-initialized Tavily client for web search
+- `prompts.ts` - System prompts with tool selection guidance
+
+**State Management Hooks** (`src/hooks/`):
+- `useChatPersistence.ts` - Message save/load with delayed conversation creation
+- `useConversations.ts` - Live query of conversations, CRUD operations
+- `useTitleGeneration.ts` - LLM title generation with retry logic (3 attempts, exponential backoff)
+
 ### Dependency Graph
 
 ```
@@ -313,9 +333,107 @@ When modifying UI components:
 - **Safe areas**: Support for device notches and home indicators
 - **Performance**: Reduced motion support via `useReducedMotion()` hook
 
+---
+
+## Integration Points
+
+When extending the codebase, follow these patterns for each feature type:
+
+### Adding New AI Tools
+
+1. **Define the tool** in `src/lib/ai/tools.ts` with Zod schema for parameters
+2. **Add content block type** in `src/types/content-blocks.ts` using discriminated union
+3. **Create renderer component** in `src/components/blocks/` following existing patterns
+4. **Register renderer** in `ChatMessageItem.tsx` tool result handling
+
+```typescript
+// Example: Adding a "generateTable" tool
+// 1. src/lib/ai/tools.ts
+generateTable: tool({
+  description: 'Generate a data table',
+  parameters: z.object({
+    headers: z.array(z.string()),
+    rows: z.array(z.array(z.string())),
+  }),
+  execute: async (params) => ({ type: 'table', ...params }),
+}),
+
+// 2. src/types/content-blocks.ts - add to discriminated union
+// 3. src/components/blocks/TableBlock.tsx - create component
+// 4. src/components/chat/ChatMessageItem.tsx - add case for 'table' type
+```
+
+### Adding New AI Models
+
+Add to the `MODELS` array in `src/lib/ai/models.ts`:
+
+```typescript
+export const MODELS = [
+  { id: 'gpt-4o', name: 'GPT-4o', provider: 'openai' },
+  { id: 'new-model-id', name: 'Display Name', provider: 'openai' },
+] as const;
+```
+
+### Adding New API Endpoints
+
+1. **Create route** in `src/app/api/[endpoint-name]/route.ts`
+2. **Update config** if external backend support needed - add endpoint to `getApiUrl()` in `src/config.ts`
+3. **Create client hook** in `src/hooks/` for frontend consumption
+
+### Extending Chat Persistence
+
+1. **Update schema** in `src/lib/db/schema.ts` - increment version, add migration
+2. **Update types** in `src/types/` for new fields
+3. **Update hooks** - modify `useChatPersistence.ts` or `useConversations.ts`
+
+```typescript
+// Example: Adding message reactions
+// 1. src/lib/db/schema.ts
+this.version(2).stores({
+  conversations: 'id, updatedAt, userId',
+  messages: '++id, conversationId, userId, createdAt',
+  reactions: '++id, messageId, emoji, userId',  // new table
+});
+```
+
+### Adding New Chat Features
+
+1. **Extend context type** in `src/components/chat/ChatProvider.tsx`
+2. **Add state and handlers** within the provider
+3. **Expose via useChat2()** hook return value
+
+```typescript
+// Example: Adding typing indicators
+// In ChatProvider.tsx, add to ChatContextType:
+isTyping: boolean;
+setIsTyping: (typing: boolean) => void;
+```
+
+### Adding New UI Components
+
+1. **Create component** in `src/components/ui/` following shadcn/ui patterns
+2. **Use `'use client'`** directive for interactive components
+3. **Apply variants** with `class-variance-authority` (cva)
+4. **Include `data-slot`** attribute for styling hooks
+
+---
+
 ## Known Technical Debt
 
-- No test coverage (unit, integration, or e2e tests)
-- Sidebar component is 572 lines (should be split into SettingsModal, UserMenu, ConversationList)
-- User authentication is hardcoded ("Dev User" placeholder)
-- @mui/material dependency appears unused
+| Item | Severity | Description | Suggested Fix |
+|------|----------|-------------|---------------|
+| No test coverage | High | Zero unit, integration, or e2e tests | Add Vitest for unit tests, Playwright for e2e |
+| Large Sidebar component | Medium | `Sidebar.tsx` is 572 lines with mixed concerns | Split into `SettingsModal`, `UserMenu`, `ConversationList` components |
+| No error boundaries | Medium | React errors crash entire app | Add error boundaries around Chat, Sidebar, and tool blocks |
+| Hardcoded user auth | Medium | User identity is placeholder "Dev User" | Implement NextAuth.js or Clerk for real authentication |
+| Unused dependencies | Low | `@mui/material` and `next-themes` appear unused | Audit and remove from package.json |
+| No CI/CD pipeline | Medium | Manual deployment, no automated checks | Add GitHub Actions for lint, type-check, build |
+| Missing input validation | Low | API routes trust client input | Add Zod validation at API boundaries |
+
+### Architectural Strengths
+
+- **Clean module boundaries** - Clear separation between chat, AI, persistence, and UI layers
+- **Robust persistence** - Delayed conversation creation prevents orphan records; transactions ensure data integrity
+- **Production-ready AI** - Streaming responses, type-safe tools, retry logic with exponential backoff
+- **Flexible deployment** - Works as full-stack or frontend-only via environment configuration
+- **Accessible UI** - Reduced motion support, ARIA labels, keyboard navigation
