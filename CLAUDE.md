@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Modular monolith AI chatbot with feature-based organization. Next.js 15 + Vercel AI SDK v6 + Tailwind CSS v4.
+Modular monolith AI agents application with feature-based organization. Next.js 15 + Vercel AI SDK v6 + Tailwind CSS v4.
 
 **Key Characteristics:**
 - Client-server split: React components handle UI, Next.js API routes handle AI interactions
@@ -161,7 +161,7 @@ npm start
 
 ## Architecture
 
-This is a Next.js 15 + Vercel AI SDK v6 + Tailwind CSS v4 AI chatbot application.
+This is a Next.js 15 + Vercel AI SDK v6 + Tailwind CSS v4 AI agents application.
 
 ### Entry Points
 - `src/app/layout.tsx` - Root layout with ThemeProvider
@@ -196,7 +196,7 @@ This is a Next.js 15 + Vercel AI SDK v6 + Tailwind CSS v4 AI chatbot application
 
 ### AI Tools
 
-The chatbot includes 5 AI tools defined in `src/lib/ai/tools.ts`:
+The agent includes 5 AI tools defined in `src/lib/ai/tools.ts`:
 1. `generateForm` - Creates interactive forms for data collection
 2. `generateChart` - Creates data visualization charts (recharts)
 3. `generateCode` - Generates syntax-highlighted code blocks (shiki)

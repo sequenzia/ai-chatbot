@@ -7,7 +7,7 @@ import {
   SquarePen,
   PanelLeftClose,
   PanelLeftOpen,
-  Sparkles,
+  Bot,
   MessageSquare,
   Moon,
   Sun,
@@ -137,10 +137,10 @@ export function Sidebar({
               <>
                 <div className="flex items-center gap-2">
                   <div className="size-8 bg-sidebar-primary rounded-lg flex items-center justify-center">
-                    <Sparkles className="size-5 text-sidebar-primary-foreground" />
+                    <Bot className="size-5 text-sidebar-primary-foreground" />
                   </div>
                   <span className="font-semibold text-sidebar-foreground">
-                    AI Chatbot
+                    AI Agents
                   </span>
                 </div>
                 <button

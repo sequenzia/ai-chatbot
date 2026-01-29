@@ -1,5 +1,5 @@
-site_name: AI Chatbot Developer Docs
-site_description: Developer documentation for the AI Chatbot application built with Next.js 15, Vercel AI SDK v6, and Tailwind CSS v4
+site_name: AI Agents Developer Docs
+site_description: Developer documentation for the AI Agents application built with Next.js 15, Vercel AI SDK v6, and Tailwind CSS v4
 site_url: https://sequenzia.github.io/ai-chatbot
 
 repo_name: ai-chatbot

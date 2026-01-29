@@ -3,8 +3,8 @@ import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'AI Chatbot',
-  description: 'AI-powered chatbot with multi-provider support',
+  title: 'AI Agents',
+  description: 'AI-powered agents with multi-provider support',
 };
 
 export const viewport: Viewport = {

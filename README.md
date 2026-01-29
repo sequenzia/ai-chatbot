@@ -1,10 +1,10 @@
-# AI Chatbot
+# AI Agents
 
-A modern AI chatbot template built with Next.js 15, Vercel AI SDK v6, and Tailwind CSS v4.
+A modern AI agents template built with Next.js 15, Vercel AI SDK v6, and Tailwind CSS v4.
 
 ## Overview
 
-AI Chatbot is a modular, feature-rich chat application that provides real-time streaming conversations with OpenAI models. Built with a clean separation of concerns, the architecture uses a Provider Pattern for state management and local-first persistence with IndexedDB.
+AI Agents is a modular, feature-rich chat application that provides real-time streaming conversations with OpenAI models. Built with a clean separation of concerns, the architecture uses a Provider Pattern for state management and local-first persistence with IndexedDB.
 
 ### Key Features
 
@@ -149,7 +149,7 @@ src/
 
 ## Available Models
 
-The chatbot supports OpenAI models:
+The agent supports OpenAI models:
 
 | Model | ID |
 |-------|-----|

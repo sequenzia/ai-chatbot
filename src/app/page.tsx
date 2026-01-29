@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Sparkles } from 'lucide-react';
+import { Bot } from 'lucide-react';
 import { ChatProvider, useChat2 } from '@/components/chat/ChatProvider';
 import { ChatConversation } from '@/components/chat/ChatConversation';
 import { ChatInput } from '@/components/chat/ChatInput';
@@ -23,12 +23,12 @@ function WelcomeScreen() {
     >
       {/* Icon */}
       <div className="size-16 bg-primary rounded-[24px] shadow-xl flex items-center justify-center mb-6">
-        <Sparkles className="size-8 text-primary-foreground" />
+        <Bot className="size-8 text-primary-foreground" />
       </div>
 
       {/* Title */}
       <h1 className="text-2xl font-bold mb-2 welcome-landscape-hide">
-        Welcome to AI Chatbot
+        Welcome to AI Agents
       </h1>
       <p className="text-muted-foreground mb-8 max-w-md welcome-landscape-hide">
         Ask me anything or choose a suggestion below to get started!
