@@ -23,7 +23,6 @@ export const config = {
   ai: {
     openaiApiKey: process.env.OPENAI_API_KEY,
     apiMode: getApiMode(),
-    defaultModel: process.env.AI_DEFAULT_MODEL || 'gpt-oss-120b',
     debug: process.env.AI_DEBUG_ON === 'true',
     titleGeneration: {
       model: process.env.AI_TITLE_MODEL || 'gpt-4o-mini',
@@ -42,6 +41,9 @@ const clientConfig = {
   api: {
     baseUrl: process.env.NEXT_PUBLIC_CHAT_API_URL || '',
     agent: process.env.NEXT_PUBLIC_AI_AGENT || undefined,
+  },
+  ai: {
+    defaultModel: process.env.NEXT_PUBLIC_AI_DEFAULT_MODEL || undefined,
   },
 };
 
@@ -77,4 +79,12 @@ export function getApiUrl(endpoint: 'chat' | 'generate-title'): string {
  */
 export function getAgent(): string | undefined {
   return clientConfig.api.agent;
+}
+
+/**
+ * Get the configured default model ID.
+ * Returns undefined if not configured, allowing callers to use their own fallback.
+ */
+export function getDefaultModelId(): string | undefined {
+  return clientConfig.ai.defaultModel;
 }

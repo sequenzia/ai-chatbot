@@ -1,3 +1,5 @@
+import { getDefaultModelId } from '@/config';
+
 /**
  * Model definitions for OpenAI
  */
@@ -10,7 +12,11 @@ export const MODELS = [
 export type Model = (typeof MODELS)[number];
 export type ModelId = Model['id'];
 
-export const DEFAULT_MODEL = MODELS.find((m) => m.id === 'gpt-oss-120b') ?? MODELS[0];
+// Use env var if set and valid, otherwise fallback to first model
+const configuredModelId = getDefaultModelId();
+export const DEFAULT_MODEL: Model =
+  (configuredModelId ? MODELS.find((m) => m.id === configuredModelId) : undefined) ??
+  MODELS[0];
 
 export function getModelById(id: string): Model | undefined {
   return MODELS.find((m) => m.id === id);

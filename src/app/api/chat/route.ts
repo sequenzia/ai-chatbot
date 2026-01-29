@@ -1,8 +1,8 @@
 import { convertToModelMessages, streamText, stepCountIs, type UIMessage } from 'ai';
-import { config } from '@/config';
 import { chatTools } from '@/lib/ai/tools';
 import { getModel } from '@/lib/ai/model';
 import { SYSTEM_PROMPT } from '@/lib/ai/prompts';
+import { DEFAULT_MODEL } from '@/lib/ai/models';
 
 export const maxDuration = 30;
 
@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   try {
     const { messages, model, agent }: { messages: UIMessage[]; model?: string; agent?: string } = await req.json();
 
-    const selectedModel = model || config.ai.defaultModel;
+    const selectedModel = model || DEFAULT_MODEL.id;
 
     const result = streamText({
       model: getModel(selectedModel),
