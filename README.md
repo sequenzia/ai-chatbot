@@ -149,16 +149,27 @@ src/
 
 ## Available Models
 
-The agent supports OpenAI models:
+The agent supports OpenAI models (configured in `src/lib/ai/models.ts`):
 
 | Model | ID |
 |-------|-----|
-| GPT-5.2 | `gpt-5.2` |
-| GPT-5 | `gpt-5` |
-| GPT-5 Mini | `gpt-5-mini` |
-| GPT-5 Nano | `gpt-5-nano` |
+| GPT-OSS-120B | `gpt-oss-120b` |
 | GPT-4o | `gpt-4o` |
 | GPT-4o Mini | `gpt-4o-mini` |
+
+## AI Tools
+
+The agent includes 5 interactive tools that generate structured content:
+
+| Tool | Description | Renderer |
+|------|-------------|----------|
+| `generateForm` | Interactive forms for data collection | `FormContent.tsx` (react-hook-form) |
+| `generateChart` | Data visualizations (line, bar, pie, area) | `ChartContent.tsx` (recharts) |
+| `generateCode` | Syntax-highlighted code blocks | `CodeContent.tsx` (shiki) |
+| `generateCard` | Rich content cards with media and actions | `CardContent.tsx` |
+| `webSearch` | Real-time web search (requires Tavily) | Inline in `ChatMessageItem.tsx` |
+
+Tools use a **pass-through execution** pattern: the server validates structured output via Zod schemas and returns it unchanged for client-side rendering.
 
 ## Customization
 
@@ -186,6 +197,13 @@ NEXT_PUBLIC_CHAT_API_URL=https://api.example.com
 ```
 
 This will route requests to `https://api.example.com/chat` and `https://api.example.com/generate-title`.
+
+## Known Limitations
+
+- **No authentication** - User identity is a placeholder; implement NextAuth.js or Clerk for production
+- **Browser-only storage** - IndexedDB data is local to the browser; no cross-device sync
+- **No test coverage** - No unit, integration, or e2e tests yet
+- **No CI/CD for code** - Only documentation deployment is automated
 
 ## License
 

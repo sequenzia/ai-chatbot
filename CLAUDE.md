@@ -30,7 +30,7 @@ ai-chatbot/
 │   │   └── page.tsx            # Main chat page
 │   ├── components/
 │   │   ├── chat/               # Core chat components (ChatProvider, ChatConversation, ChatInput)
-│   │   ├── ai-elements/        # AI SDK UI wrappers (prompt-input, model-selector, message)
+│   │   ├── ai-elements/        # AI SDK UI wrappers (prompt-input, model-selector, message, reasoning, tool, loader, suggestion, code-block)
 │   │   ├── blocks/             # Interactive content (forms, charts, code, cards)
 │   │   ├── layout/             # Sidebar with chat history
 │   │   ├── providers/          # ThemeProvider
@@ -38,7 +38,11 @@ ai-chatbot/
 │   ├── hooks/                  # Custom React hooks
 │   │   ├── useChatPersistence.ts  # Message save/load with transactions
 │   │   ├── useConversations.ts    # Conversation list management
-│   │   └── useTitleGeneration.ts  # LLM title generation with retry
+│   │   ├── useTitleGeneration.ts  # LLM title generation with retry
+│   │   ├── useReducedMotion.ts    # Accessibility: prefers-reduced-motion
+│   │   ├── useDeviceType.ts       # Mobile/tablet/desktop detection
+│   │   └── useVirtualKeyboard.ts  # Virtual keyboard detection
+│   ├── constants/              # Static data (suggestion prompts)
 │   ├── lib/
 │   │   ├── ai/                 # AI model factory, tools, prompts
 │   │   ├── db/                 # Dexie IndexedDB schema
@@ -423,17 +427,23 @@ setIsTyping: (typing: boolean) => void;
 | Item | Severity | Description | Suggested Fix |
 |------|----------|-------------|---------------|
 | No test coverage | High | Zero unit, integration, or e2e tests | Add Vitest for unit tests, Playwright for e2e |
+| No CI/CD pipeline | High | Manual deployment, no automated checks | Add GitHub Actions for lint, type-check, build |
+| Missing input validation | Medium | API routes trust client input without Zod validation | Add Zod schemas at API boundaries |
 | Large Sidebar component | Medium | `Sidebar.tsx` is 572 lines with mixed concerns | Split into `SettingsModal`, `UserMenu`, `ConversationList` components |
 | No error boundaries | Medium | React errors crash entire app | Add error boundaries around Chat, Sidebar, and tool blocks |
 | Hardcoded user auth | Medium | User identity is placeholder "Dev User" | Implement NextAuth.js or Clerk for real authentication |
-| Unused dependencies | Low | `@mui/material` and `next-themes` appear unused | Audit and remove from package.json |
-| No CI/CD pipeline | Medium | Manual deployment, no automated checks | Add GitHub Actions for lint, type-check, build |
-| Missing input validation | Low | API routes trust client input | Add Zod validation at API boundaries |
+| Unused dependencies | Medium | `@mui/material`, `@emotion/*`, `next-themes`, `react-dnd`, `react-popper` appear unused | Run `npx depcheck` and remove from package.json |
+| Duplicated truncation logic | Low | `truncateAtWordBoundary` implemented in 3 separate files | Consolidate into `src/lib/utils/message.ts` |
+| Inline SVG icons | Low | Sidebar uses hand-written SVG for logout icon | Replace with `lucide-react` icon (already a dependency) |
+| No API response validation | Low | Hooks call `response.json()` and access fields without type checking | Add Zod schemas for API response shapes |
+| Vercel-specific maxDuration | Low | API routes export `maxDuration` (Vercel serverless only) | Document platform dependency or abstract |
 
 ### Architectural Strengths
 
-- **Clean module boundaries** - Clear separation between chat, AI, persistence, and UI layers
-- **Robust persistence** - Delayed conversation creation prevents orphan records; transactions ensure data integrity
-- **Production-ready AI** - Streaming responses, type-safe tools, retry logic with exponential backoff
+- **Clean module boundaries** - Unidirectional dependency flow: Pages → Components → Hooks → Lib/DB. No circular imports.
+- **Robust persistence** - Delayed conversation creation prevents orphan records; Dexie transactions ensure data integrity; duplicate message prevention guards race conditions
+- **Production-ready AI** - Streaming responses, type-safe tools via Zod discriminated unions, retry logic with exponential backoff
 - **Flexible deployment** - Works as full-stack or frontend-only via environment configuration
 - **Accessible UI** - Reduced motion support, ARIA labels, keyboard navigation
+- **Extensible tool system** - Clear 4-step pattern for adding new AI tools (tool → schema → renderer → register)
+- **Self-documenting architecture** - Comprehensive CLAUDE.md with dependency graph, data flow, and integration guides

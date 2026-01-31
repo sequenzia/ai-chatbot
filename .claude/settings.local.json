@@ -1,18 +1,18 @@
 {
-    "permissions": {
+  "permissions": {
     "additionalDirectories": [
       "/Users/sequenzia/dev/repos/mamba-server"
     ]
   },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
+    "context7",
     "next-devtools",
     "shadcn",
     "chrome-devtools",
-    "ai-elements",
-    "context7"
+    "ai-elements"
   ],
   "enabledPlugins": {
     "typescript-lsp@claude-plugins-official": true
-  },
-  "enableAllProjectMcpServers": true
+  }
 }
